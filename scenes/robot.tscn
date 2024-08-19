@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://d5ft42oeto0o"]
+
+[ext_resource type="Script" path="res://scripts/robot.gd" id="1_6guur"]
+[ext_resource type="Texture2D" uid="uid://fvw4bi5yf4va" path="res://assets/sprites/RobotFace.png" id="2_n3dnw"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_aayl6"]
+size = Vector2(64, 64)
+
+[node name="Robot" type="CharacterBody2D"]
+script = ExtResource("1_6guur")
+
+[node name="GraphicsSprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_n3dnw")
+
+[node name="GeometryCollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_aayl6")
+debug_color = Color(0, 0.6, 0.7, 0.42)

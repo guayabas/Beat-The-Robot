@@ -1,0 +1,45 @@
+[gd_scene load_steps=4 format=3 uid="uid://de2oy4jkoijus"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_oryb2"]
+[ext_resource type="Texture2D" uid="uid://bkt2glhdr441t" path="res://assets/sprites/Player.png" id="2_jvbxq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yqfdv"]
+size = Vector2(64, 64)
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_oryb2")
+
+[node name="GraphicsSprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_jvbxq")
+
+[node name="GeometryCollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_yqfdv")
+debug_color = Color(0, 0.6, 0.7, 0.42)
+
+[node name="RayCast2DDown" type="RayCast2D" parent="."]
+target_position = Vector2(0, 32)
+
+[node name="RayCast2DRight" type="RayCast2D" parent="."]
+target_position = Vector2(32, 0)
+
+[node name="RayCast2DLeft" type="RayCast2D" parent="."]
+target_position = Vector2(-32, 0)
+
+[node name="RayCast2DUp" type="RayCast2D" parent="."]
+target_position = Vector2(0, -32)
+
+[node name="RayCast2DDownRight" type="RayCast2D" parent="."]
+process_mode = 4
+target_position = Vector2(32, 32)
+
+[node name="RayCast2DDownLeft" type="RayCast2D" parent="."]
+process_mode = 4
+target_position = Vector2(-32, 32)
+
+[node name="RayCast2DUpRight" type="RayCast2D" parent="."]
+process_mode = 4
+target_position = Vector2(32, -32)
+
+[node name="RayCast2DUpLeft" type="RayCast2D" parent="."]
+process_mode = 4
+target_position = Vector2(-32, -32)

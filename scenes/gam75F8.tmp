@@ -1,0 +1,108 @@
+[gd_scene load_steps=16 format=3 uid="uid://rtwap0tlb660"]
+
+[ext_resource type="PackedScene" uid="uid://gdxrcfwyvtq1" path="res://scenes/maze.tscn" id="1_ep76x"]
+[ext_resource type="Script" path="res://scripts/game.gd" id="1_sj8bf"]
+[ext_resource type="PackedScene" uid="uid://de2oy4jkoijus" path="res://scenes/player.tscn" id="2_88jp2"]
+[ext_resource type="PackedScene" uid="uid://mmth50xyuquq" path="res://scenes/goal_area.tscn" id="3_a4h41"]
+[ext_resource type="PackedScene" uid="uid://cm6c3tqde6i2s" path="res://scenes/level_01_tilemap.tscn" id="5_3hhcn"]
+[ext_resource type="PackedScene" uid="uid://d5ft42oeto0o" path="res://scenes/robot.tscn" id="5_4xci4"]
+[ext_resource type="AudioStream" uid="uid://k351amcawjq" path="res://assets/audio/Stream Loops 2024-03-20_02.ogg" id="6_mvpqm"]
+[ext_resource type="AudioStream" uid="uid://yqe4brbelaxt" path="res://assets/audio/Stream Loops 2024-02-21_02.ogg" id="6_xe4m0"]
+[ext_resource type="PackedScene" uid="uid://bmo04yg3u7pha" path="res://scenes/start_level_screen.tscn" id="7_6mv3e"]
+[ext_resource type="AudioStream" uid="uid://ltwja2c1hhks" path="res://assets/audio/Stream Loops 2024-02-21_01.ogg" id="7_reh8n"]
+[ext_resource type="PackedScene" uid="uid://if7yybfb42dl" path="res://scenes/home_ui.tscn" id="11_18tj5"]
+[ext_resource type="AudioStream" uid="uid://cvx0hvox5qxpj" path="res://assets/audio/Stream Loops 2024-02-14_L01.ogg" id="12_nnq5x"]
+
+[sub_resource type="Curve2D" id="Curve2D_0hblo"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 960, 896, 0, 0, 0, 0, 64, 896, 0, 0, 0, 0, 64, 688, 0, 0, 0, 0, 960, 688, 0, 0, 0, 0, 960, 512, 0, 0, 0, 0, 512, 512)
+}
+point_count = 6
+
+[sub_resource type="Curve2D" id="Curve2D_a6y8m"]
+_data = {
+"points": PackedVector2Array(-1.88775, -265.229, 1.88775, 265.229, 944, 672, 47.1434, 13.4695, -47.1434, -13.4695, 784, 944, -33.6739, 68.4702, 33.6739, -68.4702, 608, 328, -35.9188, -1.12246, 35.9188, 1.12246, 720, 232, -55.0006, -61.7354, 55.0006, 61.7354, 832, 288, 0, 0, 0, 0, 792, 536)
+}
+point_count = 6
+
+[sub_resource type="Curve2D" id="Curve2D_cwd5o"]
+
+[node name="Game" type="Node2D" node_paths=PackedStringArray("player_node", "robot_node", "robot_path", "current_level_node", "current_level_background_music")]
+script = ExtResource("1_sj8bf")
+visual_debug_mode = false
+player_node = NodePath("Player")
+robot_node = NodePath("Levels/RobotPath/RobotPathFollowing/Robot")
+robot_path = NodePath("Levels/RobotPath")
+current_level_node = NodePath("Levels/Sandbox/SanboxTileMap")
+current_level_background_music = NodePath("Levels/Sandbox/SanboxBackgroundMusic")
+
+[node name="Levels" type="Node" parent="."]
+
+[node name="GoalArea" parent="Levels" instance=ExtResource("3_a4h41")]
+collision_layer = 2
+collision_mask = 2
+
+[node name="Sandbox" type="Node2D" parent="Levels"]
+
+[node name="SanboxTileMap" parent="Levels/Sandbox" instance=ExtResource("1_ep76x")]
+
+[node name="Marker2D" type="Marker2D" parent="Levels/Sandbox/SanboxTileMap"]
+position = Vector2(64, 64)
+
+[node name="SandboxRobotPath" type="Path2D" parent="Levels/Sandbox"]
+curve = SubResource("Curve2D_0hblo")
+
+[node name="SanboxBackgroundMusic" type="AudioStreamPlayer" parent="Levels/Sandbox"]
+stream = ExtResource("6_mvpqm")
+
+[node name="Level01" type="Node2D" parent="Levels"]
+
+[node name="Level01TileMap" parent="Levels/Level01" instance=ExtResource("5_3hhcn")]
+
+[node name="Marker2D" type="Marker2D" parent="Levels/Level01/Level01TileMap"]
+position = Vector2(64, 64)
+
+[node name="Level01RobotPath" type="Path2D" parent="Levels/Level01"]
+curve = SubResource("Curve2D_a6y8m")
+
+[node name="Level01BackgroundMusic" type="AudioStreamPlayer" parent="Levels/Level01"]
+stream = ExtResource("6_xe4m0")
+
+[node name="Credits" type="Node2D" parent="Levels"]
+
+[node name="CreditsBackgroundMusic" type="AudioStreamPlayer" parent="Levels/Credits"]
+stream = ExtResource("7_reh8n")
+
+[node name="RobotPath" type="Path2D" parent="Levels"]
+curve = SubResource("Curve2D_cwd5o")
+
+[node name="RobotPathFollowing" type="PathFollow2D" parent="Levels/RobotPath"]
+rotates = false
+loop = false
+
+[node name="Robot" parent="Levels/RobotPath/RobotPathFollowing" instance=ExtResource("5_4xci4")]
+collision_layer = 3
+collision_mask = 3
+
+[node name="StartDelayTimer" type="Timer" parent="Levels"]
+one_shot = true
+
+[node name="Player" parent="." instance=ExtResource("2_88jp2")]
+z_index = 1
+collision_layer = 3
+collision_mask = 3
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="StartLevelScreen" parent="CanvasLayer" instance=ExtResource("7_6mv3e")]
+
+[node name="HomeUI" parent="CanvasLayer" instance=ExtResource("11_18tj5")]
+
+[node name="HomeUIBackgroundMusic" type="AudioStreamPlayer" parent="CanvasLayer/HomeUI"]
+stream = ExtResource("12_nnq5x")
+
+[connection signal="inform_player_level_has_finished" from="." to="." method="_on_inform_player_level_has_finished"]
+[connection signal="inform_player_level_has_started" from="." to="." method="_on_inform_player_level_has_started"]
+[connection signal="body_entered" from="Levels/GoalArea" to="." method="_on_area_2d_body_entered"]
+[connection signal="timeout" from="Levels/StartDelayTimer" to="." method="_on_start_delay_timeout"]
+[connection signal="inform_game_that_user_has_started_game" from="CanvasLayer/HomeUI" to="." method="_on_home_ui_inform_game_that_user_has_started_game"]

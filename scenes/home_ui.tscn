@@ -1,0 +1,76 @@
+[gd_scene load_steps=3 format=3 uid="uid://if7yybfb42dl"]
+
+[ext_resource type="Script" path="res://scripts/home_ui.gd" id="1_t48ok"]
+[ext_resource type="Texture2D" uid="uid://fvw4bi5yf4va" path="res://assets/sprites/RobotFace.png" id="2_2t3v6"]
+
+[node name="HomeUI" type="Control" node_paths=PackedStringArray("start_game_button", "settings_game_button", "exit_game_button")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_t48ok")
+start_game_button = NodePath("VBoxContainer/StartGameButton")
+settings_game_button = NodePath("VBoxContainer/SettingsButton")
+exit_game_button = NodePath("VBoxContainer/EndGameButton")
+
+[node name="GameTitleBoxContainer" type="BoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -472.0
+offset_right = 472.0
+offset_bottom = 175.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="GameTitleLabel" type="Label" parent="GameTitleBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 128
+text = "Beat The Robot"
+horizontal_alignment = 1
+
+[node name="RobotTexture" type="TextureRect" parent="."]
+layout_mode = 2
+offset_right = 1024.0
+offset_bottom = 1024.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.4, 0.4)
+pivot_offset = Vector2(512, 352)
+texture = ExtResource("2_2t3v6")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 192.0
+offset_top = 672.0
+offset_right = 832.0
+offset_bottom = 1024.0
+
+[node name="StartGameButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Start Game"
+
+[node name="SettingsButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Settings"
+
+[node name="EndGameButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Exit Game"
+
+[node name="JoyPadDPadEventTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_entered" from="VBoxContainer/StartGameButton" to="." method="_on_start_game_button_mouse_entered"]
+[connection signal="pressed" from="VBoxContainer/StartGameButton" to="." method="_on_start_game_button_pressed"]
+[connection signal="mouse_entered" from="VBoxContainer/SettingsButton" to="." method="_on_settings_button_mouse_entered"]
+[connection signal="timeout" from="JoyPadDPadEventTimer" to="." method="_on_joy_pad_d_pad_event_timer_timeout"]

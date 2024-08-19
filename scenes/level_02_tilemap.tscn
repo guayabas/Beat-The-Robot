@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=3 uid="uid://cm6c3tqde6i2s"]
+
+[ext_resource type="Texture2D" uid="uid://c4v4rqm2p8vpr" path="res://assets/tiles/Maze.png" id="1_611lc"]
+[ext_resource type="Texture2D" uid="uid://bhqrg2baiqrm0" path="res://assets/tiles/Maze32x32Tile.png" id="2_xgfqw"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_b27fk"]
+texture = ExtResource("1_611lc")
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+1:0/0 = 0
+1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:0/0/physics_layer_0/angular_velocity = 0.0
+0:1/0 = 0
+0:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:1/0/physics_layer_0/angular_velocity = 0.0
+1:1/0 = 0
+1:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:1/0/physics_layer_0/angular_velocity = 0.0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2uhkm"]
+texture = ExtResource("2_xgfqw")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+1:0/0 = 0
+1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:0/0/physics_layer_0/angular_velocity = 0.0
+0:1/0 = 0
+0:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:1/0/physics_layer_0/angular_velocity = 0.0
+1:1/0 = 0
+1:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:1/0/physics_layer_0/angular_velocity = 0.0
+
+[sub_resource type="TileSet" id="TileSet_524tl"]
+tile_size = Vector2i(32, 32)
+physics_layer_0/collision_layer = 1
+sources/0 = SubResource("TileSetAtlasSource_b27fk")
+sources/1 = SubResource("TileSetAtlasSource_2uhkm")
+
+[node name="Level02TileMap" type="TileMap"]
+tile_set = SubResource("TileSet_524tl")
+format = 2
+layer_0/tile_data = PackedInt32Array(2031616, 1, 0, 1966080, 1, 0, 1900544, 1, 0, 1835008, 1, 0, 1769472, 1, 0, 1703936, 1, 0, 1638400, 1, 0, 1572864, 1, 0, 1507328, 1, 0, 1441792, 1, 0, 1376256, 1, 0, 1310720, 1, 0, 1245184, 1, 0, 1179648, 1, 0, 1114112, 1, 0, 1048576, 1, 0, 983040, 1, 0, 917504, 1, 0, 851968, 1, 0, 786432, 1, 0, 720896, 1, 0, 655360, 1, 0, 589824, 1, 0, 524288, 1, 0, 458752, 1, 0, 393216, 1, 0, 327680, 1, 0, 262144, 1, 0, 196608, 1, 0, 131072, 1, 0, 65536, 1, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0, 4, 1, 0, 5, 1, 0, 6, 1, 0, 7, 1, 0, 8, 1, 0, 9, 1, 0, 10, 1, 0, 11, 1, 0, 12, 1, 0, 13, 1, 0, 14, 1, 0, 15, 1, 0, 16, 1, 0, 17, 1, 0, 18, 1, 0, 19, 1, 0, 20, 1, 0, 21, 1, 0, 22, 1, 0, 23, 1, 0, 24, 1, 0, 25, 1, 0, 26, 1, 0, 27, 1, 0, 28, 1, 0, 29, 1, 0, 30, 1, 0, 31, 1, 0, 65567, 1, 0, 131103, 1, 0, 196639, 1, 0, 262175, 1, 0, 327711, 1, 0, 393247, 1, 0, 458783, 1, 0, 524319, 1, 0, 589855, 1, 0, 655391, 1, 0, 720927, 1, 0, 786463, 1, 0, 851999, 1, 0, 917535, 1, 0, 983071, 1, 0, 1048607, 1, 0, 1114143, 1, 0, 1179679, 1, 0, 1245215, 1, 0, 1310751, 1, 0, 1376287, 1, 0, 1441823, 1, 0, 1507359, 1, 0, 1572895, 1, 0, 1638431, 1, 0, 1703967, 1, 0, 1769503, 1, 0, 1835039, 1, 0, 1900575, 1, 0, 1966111, 1, 0, 2031647, 1, 0, 2031646, 1, 0, 2031645, 1, 0, 2031644, 1, 0, 2031643, 1, 0, 2031642, 1, 0, 2031641, 1, 0, 2031640, 1, 0, 2031639, 1, 0, 2031620, 1, 0, 2031619, 1, 0, 2031618, 1, 0, 2031617, 1, 0, 2031621, 1, 0, 2031622, 1, 0, 2031623, 1, 0, 2031624, 1, 0, 2031625, 1, 0, 2031626, 1, 0, 2031627, 1, 0, 2031628, 1, 0, 2031629, 1, 0, 2031630, 1, 0, 2031631, 1, 0, 2031632, 1, 0, 2031633, 1, 0, 2031634, 1, 0, 2031635, 1, 0, 2031636, 1, 0, 2031637, 1, 0, 2031638, 1, 0, 589825, 1, 0, 589826, 1, 0, 589827, 1, 0, 589828, 1, 0, 589829, 1, 0, 589830, 1, 0, 65545, 1, 0, 131081, 1, 0, 196617, 1, 0, 262153, 1, 0, 327689, 1, 0, 393225, 1, 0, 1441817, 1, 0, 1441818, 1, 0, 1441819, 1, 0, 1441820, 1, 0, 1441821, 1, 0, 1441822, 1, 0, 1703958, 1, 0, 1769494, 1, 0, 1835030, 1, 0, 1900566, 1, 0, 1966102, 1, 0, 1638422, 1, 0, 655371, 1, 0, 1310741, 1, 0, 655370, 1, 0, 720906, 1, 0, 786442, 1, 0, 851978, 1, 0, 917514, 1, 0, 983050, 1, 0, 1048586, 1, 0, 1114122, 1, 0, 1179658, 1, 0, 1245194, 1, 0, 1310730, 1, 0, 1376266, 1, 0, 1376267, 1, 0, 655372, 1, 0, 1376268, 1, 0, 655373, 1, 0, 1376269, 1, 0, 655378, 1, 0, 1376274, 1, 0, 655379, 1, 0, 1376275, 1, 0, 655380, 1, 0, 1376276, 1, 0, 655381, 1, 0, 720917, 1, 0, 786453, 1, 0, 851989, 1, 0, 917525, 1, 0, 983061, 1, 0, 1048597, 1, 0, 1114133, 1, 0, 1179669, 1, 0, 1245205, 1, 0, 1376277, 1, 0)
