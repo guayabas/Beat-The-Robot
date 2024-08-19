@@ -50,8 +50,7 @@ func move_up():
 		self.position.y -= (MOVEMENT_IN_PIXELS)
 		if self.position.y < 0.0:
 			self.position.y = (1024 - self.position.y)
-		
-		
+
 func move_down():
 	current_movement_direction = MovementDirection.DOWN
 	if !ray_cast_2d_down.is_colliding():

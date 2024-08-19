@@ -7,7 +7,7 @@ class_name BeatTheRobotHomeUI
 @export var exit_game_button : Button
 enum ButtonOnFocus { START, SETTINGS, EXIT }
 enum CycleMenuDirection { DOWN, UP }
-var current_button_on_focus : ButtonOnFocus = ButtonOnFocus.START
+var current_button_on_focus
 @onready var joy_pad_d_pad_event_timer = $JoyPadDPadEventTimer
 var joy_pad_axis_ready_for_event : bool = true
 var actions_to_preserve = \
@@ -55,7 +55,7 @@ func cycle_up_menu_options(button_on_focus : ButtonOnFocus):
 			return -1
 
 func start_focus_on_start_button():
-	update_focus(current_button_on_focus)
+	update_focus(ButtonOnFocus.START)
 
 func cycle_menu_option(button_on_focus : ButtonOnFocus, cycle_direction : CycleMenuDirection):
 	var next_button_in_focus = -1
@@ -80,6 +80,7 @@ func _ready():
 	# for a signal
 	exit_game_button.connect("mouse_entered", _on_exit_game_button_mouse_entered)
 	exit_game_button.connect("pressed", _on_exit_game_button_pressed)
+	current_button_on_focus = ButtonOnFocus.START
 	start_focus_on_start_button()
 
 func _process(_delta):

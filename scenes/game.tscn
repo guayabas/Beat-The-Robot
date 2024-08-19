@@ -30,7 +30,6 @@ point_count = 4
 [node name="Game" type="Node2D" node_paths=PackedStringArray("player_node", "robot_node", "robot_path")]
 script = ExtResource("1_sj8bf")
 visual_debug_mode = false
-show_world_grid = true
 grid_thickness = 2.0
 player_node = NodePath("Player")
 robot_node = NodePath("Levels/RobotPath/RobotPathFollowing/Robot")

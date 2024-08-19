@@ -147,12 +147,15 @@ func cycle_scenes():
 	if current_scene == Scenes.HOME:
 		current_scene_background_music = level_01_background_music
 		current_scene = Scenes.LEVEL01
+		home_ui.player_is_playing_a_level = true
 	elif current_scene == Scenes.LEVEL01:
 		current_scene_background_music = level_02_background_music
 		current_scene = Scenes.LEVEL02
+		home_ui.player_is_playing_a_level = true
 	elif current_scene == Scenes.LEVEL02:
 		current_scene_background_music = credits_background_music
 		current_scene = Scenes.CREDITS
+		home_ui.player_is_playing_a_level = true
 	elif current_scene == Scenes.CREDITS:
 		current_scene_background_music = home_ui_background_music
 		current_scene = Scenes.HOME

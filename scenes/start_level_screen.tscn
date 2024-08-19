@@ -8,7 +8,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0.862745, 0.627451, 0.247059)
+color = Color(0, 0, 0, 0.490196)
 script = ExtResource("1_yy3nt")
 start_level_label = NodePath("StartLevelLabel")
 
