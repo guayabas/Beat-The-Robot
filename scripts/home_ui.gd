@@ -23,6 +23,8 @@ signal inform_game_that_user_has_started_game
 var player_is_playing_a_level : bool = false
 var is_menu_settings_being_displayed : bool = false
 
+@onready var move_up_down_menu = $Sounds/MoveUpDownMenu
+
 func update_focus(button_on_focus : ButtonOnFocus):
 	current_button_on_focus = button_on_focus
 	match button_on_focus:
@@ -68,6 +70,7 @@ func cycle_menu_option(button_on_focus : ButtonOnFocus, cycle_direction : CycleM
 		next_button_in_focus = cycle_up_menu_options(button_on_focus)
 	if next_button_in_focus != -1:
 		update_focus(next_button_in_focus)
+	move_up_down_menu.play()
 
 func _ready():
 	# NOTE : This is a way of disabling the default actions  provided

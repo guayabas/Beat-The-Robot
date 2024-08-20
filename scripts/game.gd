@@ -43,6 +43,9 @@ var current_scene_background_music : AudioStreamPlayer
 @onready var home_ui = $CanvasLayer/HomeUI
 @onready var home_ui_background_music = $CanvasLayer/HomeUI/HomeUIBackgroundMusic
 
+@onready var enter_settings_menu_sound = $CanvasLayer/SettingsMenu/EnterSettingsMenuSound
+@onready var exit_settings_menu_sound = $CanvasLayer/SettingsMenu/ExitSettingsMenuSound
+
 var last_window_mode_state : DisplayServer.WindowMode
 
 func toggle_fullscreen() -> void:
@@ -177,6 +180,9 @@ func _init():
 	pass
 
 func _ready():
+	print(AudioServer.get_bus_name(0))
+	print(AudioServer.get_bus_name(1))
+	print(AudioServer.get_bus_name(2))
 	if hide_mouse_cursor:
 		Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	get_tree().debug_collisions_hint = visual_debug_mode
@@ -187,6 +193,7 @@ func _ready():
 	current_scene_background_music.play()
 	settings_menu.visible = false
 	settings_menu.background_music_slider.value = 1.0
+	settings_menu.sound_effects_slider.value = 1.0
 	pass
 
 func _process(delta):
@@ -279,12 +286,14 @@ func _on_home_ui_inform_game_that_user_has_started_game():
 func _on_home_ui_inform_game_that_settings_screen_are_displayed():
 	home_ui.visible = false
 	home_ui.is_menu_settings_being_displayed = true
+	enter_settings_menu_sound.play()
 	settings_menu.visible = true
 	settings_menu.return_button.grab_focus()
 
 func _on_settings_menu_inform_game_that_return_button_has_been_pressed(from_game_controller : bool):
 	if current_scene == Scenes.HOME:
 		if !from_game_controller:
+			exit_settings_menu_sound.play()
 			settings_menu.visible = false
 			home_ui.visible = true
 			home_ui.is_menu_settings_being_displayed = false
@@ -293,6 +302,10 @@ func _on_settings_menu_inform_game_that_return_button_has_been_pressed(from_game
 		player_node.is_menu_settings_being_displayed = !player_node.is_menu_settings_being_displayed
 		robot_node.is_menu_settings_being_displayed = !robot_node.is_menu_settings_being_displayed
 		settings_menu.visible = !settings_menu.visible
+		if settings_menu.visible:
+			enter_settings_menu_sound.play()
+		else:
+			exit_settings_menu_sound.play()
 		settings_menu.return_button.grab_focus()
 
 func draw_grid():

@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://rtwap0tlb660"]
+[gd_scene load_steps=19 format=3 uid="uid://rtwap0tlb660"]
 
 [ext_resource type="PackedScene" uid="uid://gdxrcfwyvtq1" path="res://scenes/level_01_tilemap.tscn" id="1_ep76x"]
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_sj8bf"]
@@ -13,6 +13,8 @@
 [ext_resource type="PackedScene" uid="uid://if7yybfb42dl" path="res://scenes/home_ui.tscn" id="11_18tj5"]
 [ext_resource type="AudioStream" uid="uid://cvx0hvox5qxpj" path="res://assets/audio/Stream Loops 2024-02-14_L01.ogg" id="12_nnq5x"]
 [ext_resource type="PackedScene" uid="uid://bvubimhmlqj42" path="res://scenes/settings_menu.tscn" id="13_u1d37"]
+[ext_resource type="AudioStream" uid="uid://cjgsxeyxk8tfo" path="res://assets/audio/sounds/JDSherbert - Ultimate UI SFX Pack - Popup Open - 1.ogg" id="14_t7j0s"]
+[ext_resource type="AudioStream" uid="uid://3x4fipdsu7j6" path="res://assets/audio/sounds/JDSherbert - Ultimate UI SFX Pack - Popup Close - 1.ogg" id="15_fvo5d"]
 
 [sub_resource type="Curve2D" id="Curve2D_0hblo"]
 _data = {
@@ -55,6 +57,7 @@ curve = SubResource("Curve2D_0hblo")
 
 [node name="Level01BackgroundMusic" type="AudioStreamPlayer" parent="Levels/Level01"]
 stream = ExtResource("6_mvpqm")
+bus = &"Background Music"
 
 [node name="Level02" type="Node2D" parent="Levels"]
 
@@ -71,11 +74,13 @@ curve = SubResource("Curve2D_a6y8m")
 
 [node name="Level02BackgroundMusic" type="AudioStreamPlayer" parent="Levels/Level02"]
 stream = ExtResource("6_xe4m0")
+bus = &"Background Music"
 
 [node name="Credits" type="Node2D" parent="Levels"]
 
 [node name="CreditsBackgroundMusic" type="AudioStreamPlayer" parent="Levels/Credits"]
 stream = ExtResource("7_reh8n")
+bus = &"Background Music"
 
 [node name="RobotPath" type="Path2D" parent="Levels"]
 curve = SubResource("Curve2D_cwd5o")
@@ -104,8 +109,17 @@ collision_mask = 3
 
 [node name="HomeUIBackgroundMusic" type="AudioStreamPlayer" parent="CanvasLayer/HomeUI"]
 stream = ExtResource("12_nnq5x")
+bus = &"Background Music"
 
 [node name="SettingsMenu" parent="CanvasLayer" instance=ExtResource("13_u1d37")]
+
+[node name="EnterSettingsMenuSound" type="AudioStreamPlayer" parent="CanvasLayer/SettingsMenu"]
+stream = ExtResource("14_t7j0s")
+bus = &"Sound Effects"
+
+[node name="ExitSettingsMenuSound" type="AudioStreamPlayer" parent="CanvasLayer/SettingsMenu"]
+stream = ExtResource("15_fvo5d")
+bus = &"Sound Effects"
 
 [connection signal="inform_player_level_has_finished" from="." to="." method="_on_inform_player_level_has_finished"]
 [connection signal="inform_player_level_has_started" from="." to="." method="_on_inform_player_level_has_started"]

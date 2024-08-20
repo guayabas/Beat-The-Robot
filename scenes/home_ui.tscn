@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://if7yybfb42dl"]
+[gd_scene load_steps=4 format=3 uid="uid://if7yybfb42dl"]
 
 [ext_resource type="Script" path="res://scripts/home_ui.gd" id="1_t48ok"]
 [ext_resource type="Texture2D" uid="uid://fvw4bi5yf4va" path="res://assets/sprites/RobotFace.png" id="2_2t3v6"]
+[ext_resource type="AudioStream" uid="uid://daqe34vvux32i" path="res://assets/audio/sounds/JDSherbert - Ultimate UI SFX Pack - Cursor - 2.ogg" id="3_8fcbe"]
 
 [node name="HomeUI" type="Control" node_paths=PackedStringArray("start_game_button", "settings_game_button", "exit_game_button")]
 layout_mode = 3
@@ -68,6 +69,12 @@ text = "Exit Game"
 [node name="JoyPadDPadEventTimer" type="Timer" parent="."]
 wait_time = 0.1
 one_shot = true
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="MoveUpDownMenu" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("3_8fcbe")
+bus = &"Sound Effects"
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_entered" from="VBoxContainer/StartGameButton" to="." method="_on_start_game_button_mouse_entered"]

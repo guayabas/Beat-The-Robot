@@ -10,7 +10,7 @@ border_width_right = 12
 border_width_bottom = 12
 border_color = Color(0, 0, 0, 1)
 
-[node name="SettingsMenuColorRect" type="ColorRect" node_paths=PackedStringArray("background_music_slider", "fullscreen_checkbox", "return_button")]
+[node name="SettingsMenuColorRect" type="ColorRect" node_paths=PackedStringArray("background_music_slider", "sound_effects_slider", "fullscreen_checkbox", "return_button")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -19,6 +19,7 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.490196)
 script = ExtResource("1_xuyxu")
 background_music_slider = NodePath("VBoxContainer/PanelContainer/VBoxContainer/BackgroundMusicSlider")
+sound_effects_slider = NodePath("VBoxContainer/PanelContainer/VBoxContainer/SoundEffectsSlider")
 fullscreen_checkbox = NodePath("VBoxContainer/CenterContainer/FullscreenCheckbox")
 return_button = NodePath("VBoxContainer/ReturnButton")
 
