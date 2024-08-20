@@ -146,6 +146,9 @@ func _on_start_game_button_pressed():
 func _on_exit_game_button_pressed():
 	get_tree().quit()
 
+func _on_settings_button_pressed():
+	inform_game_that_settings_screen_are_displayed.emit()
+
 func _on_exit_game_button_mouse_entered():
 	update_focus(ButtonOnFocus.EXIT)
 

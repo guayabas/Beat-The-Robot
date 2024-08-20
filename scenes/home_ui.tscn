@@ -80,4 +80,5 @@ bus = &"Sound Effects"
 [connection signal="mouse_entered" from="VBoxContainer/StartGameButton" to="." method="_on_start_game_button_mouse_entered"]
 [connection signal="pressed" from="VBoxContainer/StartGameButton" to="." method="_on_start_game_button_pressed"]
 [connection signal="mouse_entered" from="VBoxContainer/SettingsButton" to="." method="_on_settings_button_mouse_entered"]
+[connection signal="pressed" from="VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="timeout" from="JoyPadDPadEventTimer" to="." method="_on_joy_pad_d_pad_event_timer_timeout"]

@@ -293,7 +293,8 @@ func _on_home_ui_inform_game_that_settings_screen_are_displayed():
 func _on_settings_menu_inform_game_that_return_button_has_been_pressed(from_game_controller : bool):
 	if current_scene == Scenes.HOME:
 		if !from_game_controller:
-			exit_settings_menu_sound.play()
+			if settings_menu.visible:
+				exit_settings_menu_sound.play()
 			settings_menu.visible = false
 			home_ui.visible = true
 			home_ui.is_menu_settings_being_displayed = false
