@@ -30,9 +30,9 @@ point_count = 4
 
 [sub_resource type="Curve2D" id="Curve2D_cwd5o"]
 
-[node name="Game" type="Node2D" node_paths=PackedStringArray("player_node", "robot_node", "robot_path")]
+[node name="Game" type="Node2D" node_paths=PackedStringArray("camera_node", "player_node", "robot_node", "robot_path")]
 script = ExtResource("1_sj8bf")
-visual_debug_mode = false
+camera_node = NodePath("GameCamera")
 player_node = NodePath("Player")
 robot_node = NodePath("Levels/RobotPath/RobotPathFollowing/Robot")
 robot_path = NodePath("Levels/RobotPath")
@@ -95,6 +95,9 @@ collision_mask = 3
 
 [node name="StartDelayTimer" type="Timer" parent="Levels"]
 one_shot = true
+
+[node name="GameCamera" type="Camera2D" parent="."]
+anchor_mode = 0
 
 [node name="Player" parent="." instance=ExtResource("2_88jp2")]
 z_index = 1

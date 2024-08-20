@@ -2,15 +2,21 @@ extends Node2D
 
 class_name BeatTheRobotGame
 
+enum CameraMode { NONE, CANVAS, CENTER, FREE }
+
 @export_group("Game")
 @export var enable_dynamic_drawing : bool = false
 @export var hide_mouse_cursor : bool = false
 @export var visual_debug_mode : bool = true
-@export var show_world_grid : bool = false
+@export var show_world_grid : bool = true
 @export_subgroup("Grid Properties")
 @export var grid_size : int = 32
 @export var grid_thickness : float = 2.0
 @onready var settings_menu = $CanvasLayer/SettingsMenu
+@export_subgroup("Camera")
+@export var camera_node : Camera2D
+@export var camera_mode_in_use : CameraMode = CameraMode.NONE
+@export var enable_dynamic_camera_adjustment : bool = true
 
 @export_group("Player")
 @export var player_node : CharacterBody2D
@@ -46,6 +52,9 @@ var current_scene_background_music : AudioStreamPlayer
 @onready var enter_settings_menu_sound = $CanvasLayer/SettingsMenu/EnterSettingsMenuSound
 @onready var exit_settings_menu_sound = $CanvasLayer/SettingsMenu/ExitSettingsMenuSound
 
+var initial_viewport_width : int = -1
+var initial_viewport_height : int = -1
+var initial_viewport_stretch_mode : String = ""
 var last_window_mode_state : DisplayServer.WindowMode
 
 func toggle_fullscreen() -> void:
@@ -166,6 +175,27 @@ func cycle_scenes():
 		home_ui.player_is_playing_a_level = false
 		home_ui.start_focus_on_start_button()
 
+func do_camera_adjustment(camera_mode_to_use : CameraMode):
+	var current_viewport_size = get_viewport_rect().size
+	match camera_mode_to_use:
+		CameraMode.CANVAS:
+			var camera_zoom_factor_x = float(current_viewport_size.x) / float(initial_viewport_width)
+			var camera_zoom_factor_y = float(current_viewport_size.y) / float(initial_viewport_height)
+			camera_node.zoom = Vector2(camera_zoom_factor_x, camera_zoom_factor_y)
+			camera_node.position = Vector2.ZERO
+			pass
+		CameraMode.CENTER:
+			var offset_x = (current_viewport_size.x - initial_viewport_width) * 0.5
+			var offset_y = (current_viewport_size.y - initial_viewport_height) * 0.5
+			camera_node.position = Vector2(-offset_x, -offset_y)
+			camera_node.zoom = Vector2.ONE
+			pass
+		CameraMode.NONE:
+			camera_node.position = Vector2.ZERO
+			camera_node.zoom = Vector2.ONE
+		CameraMode.FREE, _:
+			pass
+
 func _init():
 	# NOTE : Hack to bring the window to foreground in the OS when the game
 	# launches automatically in fullscreen mode. Maybe grab the current mode directly
@@ -180,9 +210,9 @@ func _init():
 	pass
 
 func _ready():
-	print(AudioServer.get_bus_name(0))
-	print(AudioServer.get_bus_name(1))
-	print(AudioServer.get_bus_name(2))
+	initial_viewport_width = ProjectSettings.get_setting("display/window/size/viewport_width")
+	initial_viewport_height = ProjectSettings.get_setting("display/window/size/viewport_height")
+	initial_viewport_stretch_mode = ProjectSettings.get_setting("display/window/stretch/mode")
 	if hide_mouse_cursor:
 		Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	get_tree().debug_collisions_hint = visual_debug_mode
@@ -190,10 +220,11 @@ func _ready():
 	get_tree().debug_paths_hint = visual_debug_mode
 	reset_scene(current_scene)
 	current_scene_background_music = home_ui_background_music
+	current_scene_background_music.volume_db = linear_to_db(0.5)
 	current_scene_background_music.play()
 	settings_menu.visible = false
-	settings_menu.background_music_slider.value = 1.0
-	settings_menu.sound_effects_slider.value = 1.0
+	settings_menu.background_music_slider.value = 0.5
+	settings_menu.sound_effects_slider.value = 0.5
 	pass
 
 func _process(delta):
@@ -202,9 +233,11 @@ func _process(delta):
 	and current_scene != Scenes.CREDITS \
 	and !robot_node.is_ray_cast_colliding() \
 	and !robot_node.is_menu_settings_being_displayed:
-		robot_path_following.progress += ((64 * 5) * delta)
+		robot_path_following.progress += ((64 * 4) * delta)
 	if enable_dynamic_drawing:
 		self.queue_redraw()
+	if enable_dynamic_camera_adjustment and initial_viewport_stretch_mode == "disabled":
+		do_camera_adjustment(camera_mode_in_use)
 	pass
 
 func _notification(what):
@@ -235,6 +268,9 @@ func _unhandled_key_input(event):
 					Key.KEY_D:
 						if !enable_dynamic_drawing:
 							self.queue_redraw()
+					Key.KEY_P:
+						camera_node.position = Vector2.ZERO
+						camera_node.zoom = Vector2.ONE
 					Key.KEY_Q:
 						get_tree().quit()
 					KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN:
@@ -248,14 +284,30 @@ func _unhandled_key_input(event):
 						current_scene_background_music.play()
 
 func _unhandled_input(event):
+	#print(event)
 	if event is InputEventJoypadMotion:
 		if abs(event.axis_value) > 0.5:
 			start_level()
-	if event is InputEventJoypadButton:
+	elif event is InputEventJoypadButton:
 		if event.pressed:
 			match event.button_index:
 				JOY_BUTTON_DPAD_LEFT, JOY_BUTTON_DPAD_RIGHT, JOY_BUTTON_DPAD_DOWN, JOY_BUTTON_DPAD_UP:
 					start_level()
+	elif event is InputEventMouseButton:
+		if initial_viewport_stretch_mode == "disabled":
+			match event.button_index:
+				MOUSE_BUTTON_WHEEL_DOWN:
+					camera_node.zoom += Vector2(0.1, 0.1)
+					pass
+				MOUSE_BUTTON_WHEEL_UP:
+					camera_node.zoom -= Vector2(0.1, 0.1)
+					pass
+	elif event is InputEventMouseMotion:
+		if initial_viewport_stretch_mode == "disabled":
+			match event.button_mask:
+				MOUSE_BUTTON_LEFT:
+					camera_node.position.x -= event.relative.x
+					camera_node.position.y -= event.relative.y
 
 func _on_area_2d_body_entered(body):
 	if current_scene != Scenes.CREDITS:
@@ -311,15 +363,20 @@ func _on_settings_menu_inform_game_that_return_button_has_been_pressed(from_game
 
 func draw_grid():
 	var viewport_dimensions = get_viewport_rect().size
+	print(viewport_dimensions)
+	# NOTE : On Windows the fullscreen mode takes 1 pixel for each border (read Godot documentation)
+	if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
+		viewport_dimensions += Vector2(2, 2)
 	var pixel_grid_size = (viewport_dimensions / grid_size)
 	var custom_gray = Color.GRAY
-	custom_gray.a = 0.5
+	custom_gray.a = 0.3
 	for i in range(0, pixel_grid_size.x):
 		for j in range(0, pixel_grid_size.y):
 			var x = (i * grid_size)
 			var y = (j * grid_size)
 			self.draw_line(Vector2(x, y), Vector2(x + grid_size, y), custom_gray, grid_thickness)
 			self.draw_line(Vector2(x, y), Vector2(x, y + grid_size), custom_gray, grid_thickness)
+	# NOTE : This edge-case does not work for non-multiples of 2 ... bummer
 	var last_row = pixel_grid_size.y * grid_size
 	for i in range(0, pixel_grid_size.x):
 		var x = (i * grid_size)

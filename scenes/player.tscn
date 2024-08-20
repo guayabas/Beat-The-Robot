@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bkt2glhdr441t" path="res://assets/sprites/Player.png" id="2_jvbxq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yqfdv"]
-size = Vector2(64, 64)
+size = Vector2(60, 60)
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_oryb2")
@@ -29,17 +29,17 @@ target_position = Vector2(-32, 0)
 target_position = Vector2(0, -32)
 
 [node name="RayCast2DDownRight" type="RayCast2D" parent="."]
-process_mode = 4
 target_position = Vector2(32, 32)
 
 [node name="RayCast2DDownLeft" type="RayCast2D" parent="."]
-process_mode = 4
 target_position = Vector2(-32, 32)
 
 [node name="RayCast2DUpRight" type="RayCast2D" parent="."]
-process_mode = 4
 target_position = Vector2(32, -32)
 
 [node name="RayCast2DUpLeft" type="RayCast2D" parent="."]
-process_mode = 4
 target_position = Vector2(-32, -32)
+
+[node name="PlayerCamera2D" type="Camera2D" parent="."]
+visible = false
+enabled = false

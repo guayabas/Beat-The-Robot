@@ -23,6 +23,7 @@ var current_movement_direction : MovementDirection
 @export_enum("_process", "_physics_process") var update_function : int = 1
 const disable_usage_of_personalized_inputs : bool = true
 
+var viewport_dimensions : Vector2 = Vector2.ZERO
 var movement_delay = 0.0
 var level_has_started : bool = false
 var is_menu_settings_being_displayed : bool = false
@@ -36,28 +37,28 @@ func move_left():
 	if !ray_cast_2d_left.is_colliding():
 		self.position.x -= (MOVEMENT_IN_PIXELS)
 		if self.position.x < 0.0:
-			self.position.x = (1024 - self.position.x)
+			self.position.x = viewport_dimensions.x
 
 func move_right():
 	current_movement_direction = MovementDirection.RIGHT
 	if !ray_cast_2d_right.is_colliding():
 		self.position.x += (MOVEMENT_IN_PIXELS)
-		if self.position.x > 1024:
-			self.position.x = (self.position.x - 1024)
+		if self.position.x > viewport_dimensions.x:
+			self.position.x = 0.0
 
 func move_up():
 	current_movement_direction = MovementDirection.UP
 	if !ray_cast_2d_up.is_colliding():
 		self.position.y -= (MOVEMENT_IN_PIXELS)
 		if self.position.y < 0.0:
-			self.position.y = (1024 - self.position.y)
+			self.position.y = viewport_dimensions.y
 
 func move_down():
 	current_movement_direction = MovementDirection.DOWN
 	if !ray_cast_2d_down.is_colliding():
 		self.position.y += (MOVEMENT_IN_PIXELS)
-		if self.position.y > 1024:
-			self.position.y = (self.position.y - 1024)
+		if self.position.y > viewport_dimensions.y:
+			self.position.y = 0.0
 
 func player_movement(delta:float):
 	if !is_menu_settings_being_displayed:
@@ -80,7 +81,11 @@ func player_movement(delta:float):
 				move_down()
 			movement_delay = 0.0
 
+func _ready():
+	pass
+
 func _process(delta):
+	viewport_dimensions = get_viewport_rect().size
 	if level_has_started and update_function == 0:
 		if show_console_output:
 			print("_process called every ", delta, " seconds")
