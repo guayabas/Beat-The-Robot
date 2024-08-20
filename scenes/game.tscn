@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://rtwap0tlb660"]
+[gd_scene load_steps=17 format=3 uid="uid://rtwap0tlb660"]
 
 [ext_resource type="PackedScene" uid="uid://gdxrcfwyvtq1" path="res://scenes/level_01_tilemap.tscn" id="1_ep76x"]
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_sj8bf"]
@@ -12,6 +12,7 @@
 [ext_resource type="AudioStream" uid="uid://ltwja2c1hhks" path="res://assets/audio/Stream Loops 2024-02-21_01.ogg" id="7_reh8n"]
 [ext_resource type="PackedScene" uid="uid://if7yybfb42dl" path="res://scenes/home_ui.tscn" id="11_18tj5"]
 [ext_resource type="AudioStream" uid="uid://cvx0hvox5qxpj" path="res://assets/audio/Stream Loops 2024-02-14_L01.ogg" id="12_nnq5x"]
+[ext_resource type="PackedScene" uid="uid://bvubimhmlqj42" path="res://scenes/settings_menu.tscn" id="13_u1d37"]
 
 [sub_resource type="Curve2D" id="Curve2D_0hblo"]
 _data = {
@@ -30,7 +31,7 @@ point_count = 4
 [node name="Game" type="Node2D" node_paths=PackedStringArray("player_node", "robot_node", "robot_path")]
 script = ExtResource("1_sj8bf")
 visual_debug_mode = false
-grid_thickness = 2.0
+show_world_grid = false
 player_node = NodePath("Player")
 robot_node = NodePath("Levels/RobotPath/RobotPathFollowing/Robot")
 robot_path = NodePath("Levels/RobotPath")
@@ -101,13 +102,16 @@ collision_mask = 3
 [node name="StartLevelScreen" parent="CanvasLayer" instance=ExtResource("7_6mv3e")]
 
 [node name="HomeUI" parent="CanvasLayer" instance=ExtResource("11_18tj5")]
-visible = false
 
 [node name="HomeUIBackgroundMusic" type="AudioStreamPlayer" parent="CanvasLayer/HomeUI"]
 stream = ExtResource("12_nnq5x")
+
+[node name="SettingsMenu" parent="CanvasLayer" instance=ExtResource("13_u1d37")]
 
 [connection signal="inform_player_level_has_finished" from="." to="." method="_on_inform_player_level_has_finished"]
 [connection signal="inform_player_level_has_started" from="." to="." method="_on_inform_player_level_has_started"]
 [connection signal="body_entered" from="Levels/GoalArea" to="." method="_on_area_2d_body_entered"]
 [connection signal="timeout" from="Levels/StartDelayTimer" to="." method="_on_start_delay_timeout"]
+[connection signal="inform_game_that_settings_screen_are_displayed" from="CanvasLayer/HomeUI" to="." method="_on_home_ui_inform_game_that_settings_screen_are_displayed"]
 [connection signal="inform_game_that_user_has_started_game" from="CanvasLayer/HomeUI" to="." method="_on_home_ui_inform_game_that_user_has_started_game"]
+[connection signal="inform_game_that_return_button_has_been_pressed" from="CanvasLayer/SettingsMenu" to="." method="_on_settings_menu_inform_game_that_return_button_has_been_pressed"]

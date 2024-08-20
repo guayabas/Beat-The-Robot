@@ -18,10 +18,13 @@ var actions_to_preserve = \
 	"player_move_down"
 ]
 
+signal inform_game_that_settings_screen_are_displayed
 signal inform_game_that_user_has_started_game
 var player_is_playing_a_level : bool = false
+var is_menu_settings_being_displayed : bool = false
 
 func update_focus(button_on_focus : ButtonOnFocus):
+	current_button_on_focus = button_on_focus
 	match button_on_focus:
 		ButtonOnFocus.START:
 			start_game_button.grab_focus()
@@ -64,8 +67,7 @@ func cycle_menu_option(button_on_focus : ButtonOnFocus, cycle_direction : CycleM
 	else:
 		next_button_in_focus = cycle_up_menu_options(button_on_focus)
 	if next_button_in_focus != -1:
-		current_button_on_focus = next_button_in_focus
-		update_focus(current_button_on_focus)
+		update_focus(next_button_in_focus)
 
 func _ready():
 	# NOTE : This is a way of disabling the default actions  provided
@@ -74,20 +76,20 @@ func _ready():
 	for action in InputMap.get_actions():
 		if action not in actions_to_preserve:
 			InputMap.action_erase_events(action)
+
 	# NOTE : This is to make a signal connection via code, investigate if it is possible
 	# to refresh the Godot editor to show the green arrow in a node with a signal
 	# via this way similar to what one gets when using the Godot editor for adding a connection
 	# for a signal
 	exit_game_button.connect("mouse_entered", _on_exit_game_button_mouse_entered)
 	exit_game_button.connect("pressed", _on_exit_game_button_pressed)
-	current_button_on_focus = ButtonOnFocus.START
 	start_focus_on_start_button()
 
 func _process(_delta):
 	pass
 	
 func _unhandled_key_input(event):
-	if !player_is_playing_a_level:
+	if !player_is_playing_a_level and !is_menu_settings_being_displayed:
 		if event is InputEventKey:
 			if event.pressed and !event.shift_pressed:
 				match event.keycode:
@@ -100,9 +102,11 @@ func _unhandled_key_input(event):
 							inform_game_that_user_has_started_game.emit()
 						if current_button_on_focus == ButtonOnFocus.EXIT:
 							get_tree().quit()
+						if current_button_on_focus == ButtonOnFocus.SETTINGS:
+							inform_game_that_settings_screen_are_displayed.emit()
 
 func _unhandled_input(event):
-	if !player_is_playing_a_level:
+	if !player_is_playing_a_level and !is_menu_settings_being_displayed:
 		if event is InputEventJoypadButton:
 			if event.pressed:
 				match event.button_index:
@@ -115,6 +119,8 @@ func _unhandled_input(event):
 							inform_game_that_user_has_started_game.emit()
 						if current_button_on_focus == ButtonOnFocus.EXIT:
 							get_tree().quit()
+						if current_button_on_focus == ButtonOnFocus.SETTINGS:
+							inform_game_that_settings_screen_are_displayed.emit()
 		if event is InputEventJoypadMotion:
 			match event.axis:
 				JOY_AXIS_LEFT_Y:
@@ -138,13 +144,13 @@ func _on_exit_game_button_pressed():
 	get_tree().quit()
 
 func _on_exit_game_button_mouse_entered():
-	exit_game_button.grab_focus()
+	update_focus(ButtonOnFocus.EXIT)
 
 func _on_start_game_button_mouse_entered():
-	start_game_button.grab_focus()
+	update_focus(ButtonOnFocus.START)
 
 func _on_settings_button_mouse_entered():
-	settings_game_button.grab_focus()
+	update_focus(ButtonOnFocus.SETTINGS)
 
 func _on_mouse_entered():
 	pass

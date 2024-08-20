@@ -3,6 +3,7 @@ extends CharacterBody2D
 class_name BeatTheRobotRobot
 
 @onready var geometry_collision_shape_2d = $GeometryCollisionShape2D
+var is_menu_settings_being_displayed : bool = false
 
 func _ready():
 	var ray_cast_left = RayCast2D.new()

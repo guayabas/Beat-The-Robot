@@ -25,6 +25,7 @@ const disable_usage_of_personalized_inputs : bool = true
 
 var movement_delay = 0.0
 var level_has_started : bool = false
+var is_menu_settings_being_displayed : bool = false
 
 func set_initial_position(position_to_set : Vector2):
 	self.position = position_to_set
@@ -59,24 +60,25 @@ func move_down():
 			self.position.y = (self.position.y - 1024)
 
 func player_movement(delta:float):
-	# NOTE : This part of the script handles the movement (with speed)
-	# for the player, it does not use the _*_input(event) functions
-	# since the movement is done to understand the _physics_process()/_process()
-	# function and not relying on the self.move_and_slide() as well
-	# to have same speed across input devices (keyboard, dpad, motion axis). 
-	# It is also important the if-elseif structure to limit the player to one action
-	# decision 
-	movement_delay += delta
-	if movement_delay >= (delta * SPEED_DELAY_FACTOR):
-		if Input.is_action_pressed("player_move_left"):
-			move_left()
-		elif Input.is_action_pressed("player_move_right"):
-			move_right()
-		elif Input.is_action_pressed("player_move_up"):
-			move_up()
-		elif Input.is_action_pressed("player_move_down"):
-			move_down()
-		movement_delay = 0.0
+	if !is_menu_settings_being_displayed:
+		# NOTE : This part of the script handles the movement (with speed)
+		# for the player, it does not use the _*_input(event) functions
+		# since the movement is done to understand the _physics_process()/_process()
+		# function and not relying on the self.move_and_slide() as well
+		# to have same speed across input devices (keyboard, dpad, motion axis). 
+		# It is also important the if-elseif structure to limit the player to one action
+		# decision 
+		movement_delay += delta
+		if movement_delay >= (delta * SPEED_DELAY_FACTOR):
+			if Input.is_action_pressed("player_move_left"):
+				move_left()
+			elif Input.is_action_pressed("player_move_right"):
+				move_right()
+			elif Input.is_action_pressed("player_move_up"):
+				move_up()
+			elif Input.is_action_pressed("player_move_down"):
+				move_down()
+			movement_delay = 0.0
 
 func _process(delta):
 	if level_has_started and update_function == 0:

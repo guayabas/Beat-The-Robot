@@ -3,12 +3,14 @@ extends Node2D
 class_name BeatTheRobotGame
 
 @export_group("Game")
+@export var enable_dynamic_drawing : bool = false
 @export var hide_mouse_cursor : bool = false
 @export var visual_debug_mode : bool = true
 @export var show_world_grid : bool = false
 @export_subgroup("Grid Properties")
 @export var grid_size : int = 32
-@export var grid_thickness : float = 1.0
+@export var grid_thickness : float = 2.0
+@onready var settings_menu = $CanvasLayer/SettingsMenu
 
 @export_group("Player")
 @export var player_node : CharacterBody2D
@@ -43,19 +45,18 @@ var current_scene_background_music : AudioStreamPlayer
 
 var last_window_mode_state : DisplayServer.WindowMode
 
-func toggle_fullscreen() -> bool:
+func toggle_fullscreen() -> void:
 	# TODO : There is a bug when the window goes from maximized
 	# to fullscreen and then back to maximized to then moved within the
 	# display that causes the returning window to be borderless, missin the native
 	# icons to move the window in the OS display space
-	var mode := DisplayServer.window_get_mode()
+	var mode : DisplayServer.WindowMode = DisplayServer.window_get_mode()
 	if mode == DisplayServer.WINDOW_MODE_FULLSCREEN:
-		DisplayServer.window_set_mode(last_window_mode_state)
-		return false
+		settings_menu.fullscreen_checkbox.toggled.emit(false)
+		settings_menu.fullscreen_checkbox.button_pressed = false
 	else:
-		last_window_mode_state = mode
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-		return true
+		settings_menu.fullscreen_checkbox.toggled.emit(true)
+		settings_menu.fullscreen_checkbox.button_pressed = true
 
 func disable_all_levels():
 	level_01_robot_path.visible = false
@@ -124,7 +125,7 @@ func reset_scene(scene : Scenes):
 			pass
 
 func start_level():
-	if !level_has_started:
+	if !level_has_started and !player_node.is_menu_settings_being_displayed:
 		level_has_started = true
 		start_level_screen.visible = false
 		inform_player_level_has_started.emit()
@@ -184,14 +185,19 @@ func _ready():
 	reset_scene(current_scene)
 	current_scene_background_music = home_ui_background_music
 	current_scene_background_music.play()
+	settings_menu.visible = false
+	settings_menu.background_music_slider.value = 1.0
 	pass
 
 func _process(delta):
 	if level_has_started \
 	and start_delay_timer_out \
 	and current_scene != Scenes.CREDITS \
-	and !robot_node.is_ray_cast_colliding():
+	and !robot_node.is_ray_cast_colliding() \
+	and !robot_node.is_menu_settings_being_displayed:
 		robot_path_following.progress += ((64 * 5) * delta)
+	if enable_dynamic_drawing:
+		self.queue_redraw()
 	pass
 
 func _notification(what):
@@ -220,11 +226,14 @@ func _unhandled_key_input(event):
 					Key.KEY_I:
 						robot_path_following.progress_ratio = 0.0
 					Key.KEY_D:
-						self.queue_redraw()
-					Key.KEY_Q, Key.KEY_ESCAPE:
+						if !enable_dynamic_drawing:
+							self.queue_redraw()
+					Key.KEY_Q:
 						get_tree().quit()
 					KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN:
 						start_level()
+					KEY_ESCAPE:
+						pass
 					KEY_TAB:
 						current_scene_background_music.stop()
 						cycle_scenes()
@@ -266,6 +275,25 @@ func _on_home_ui_inform_game_that_user_has_started_game():
 	reset_scene(current_scene)
 	current_scene_background_music.play()
 	home_ui.player_is_playing_a_level = true
+
+func _on_home_ui_inform_game_that_settings_screen_are_displayed():
+	home_ui.visible = false
+	home_ui.is_menu_settings_being_displayed = true
+	settings_menu.visible = true
+	settings_menu.return_button.grab_focus()
+
+func _on_settings_menu_inform_game_that_return_button_has_been_pressed(from_game_controller : bool):
+	if current_scene == Scenes.HOME:
+		if !from_game_controller:
+			settings_menu.visible = false
+			home_ui.visible = true
+			home_ui.is_menu_settings_being_displayed = false
+			home_ui.update_focus(home_ui.current_button_on_focus)
+	else:
+		player_node.is_menu_settings_being_displayed = !player_node.is_menu_settings_being_displayed
+		robot_node.is_menu_settings_being_displayed = !robot_node.is_menu_settings_being_displayed
+		settings_menu.visible = !settings_menu.visible
+		settings_menu.return_button.grab_focus()
 
 func draw_grid():
 	var viewport_dimensions = get_viewport_rect().size
