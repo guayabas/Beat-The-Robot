@@ -1,6 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://bvubimhmlqj42"]
+[gd_scene load_steps=6 format=3 uid="uid://bvubimhmlqj42"]
 
 [ext_resource type="Script" path="res://scripts/settings_menu.gd" id="1_xuyxu"]
+[ext_resource type="Theme" uid="uid://d0jdmvxjlamip" path="res://assets/pixel_theme.tres" id="2_kao1u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cy6no"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4derv"]
 bg_color = Color(1, 1, 1, 0)
@@ -9,6 +12,8 @@ border_width_top = 12
 border_width_right = 12
 border_width_bottom = 12
 border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rxulw"]
 
 [node name="SettingsMenuColorRect" type="ColorRect" node_paths=PackedStringArray("background_music_slider", "sound_effects_slider", "fullscreen_checkbox", "return_button")]
 anchors_preset = 15
@@ -45,6 +50,8 @@ text = "Return"
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 32
+theme_override_styles/separator = SubResource("StyleBoxEmpty_cy6no")
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -60,7 +67,9 @@ text = "Background Music"
 horizontal_alignment = 1
 
 [node name="BackgroundMusicSlider" type="HSlider" parent="VBoxContainer/PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
+theme = ExtResource("2_kao1u")
 max_value = 1.0
 step = 0.1
 
@@ -71,14 +80,29 @@ text = "Sounds Effects"
 horizontal_alignment = 1
 
 [node name="SoundEffectsSlider" type="HSlider" parent="VBoxContainer/PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
+theme = ExtResource("2_kao1u")
 max_value = 1.0
 step = 0.1
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 32
+theme_override_styles/separator = SubResource("StyleBoxEmpty_rxulw")
 
 [node name="CenterContainer" type="CenterContainer" parent="VBoxContainer"]
 layout_mode = 2
 
 [node name="FullscreenCheckbox" type="CheckBox" parent="VBoxContainer/CenterContainer"]
 layout_mode = 2
+theme = ExtResource("2_kao1u")
 theme_override_font_sizes/font_size = 32
 text = "Fullscreen"
+
+[connection signal="mouse_entered" from="VBoxContainer/ReturnButton" to="." method="_on_return_button_mouse_entered"]
+[connection signal="mouse_exited" from="VBoxContainer/ReturnButton" to="." method="_on_return_button_mouse_exited"]
+[connection signal="drag_ended" from="VBoxContainer/PanelContainer/VBoxContainer/BackgroundMusicSlider" to="." method="_on_background_music_slider_drag_ended"]
+[connection signal="drag_ended" from="VBoxContainer/PanelContainer/VBoxContainer/SoundEffectsSlider" to="." method="_on_sound_effects_slider_drag_ended"]
+[connection signal="mouse_entered" from="VBoxContainer/CenterContainer/FullscreenCheckbox" to="." method="_on_fullscreen_checkbox_mouse_entered"]
+[connection signal="mouse_exited" from="VBoxContainer/CenterContainer/FullscreenCheckbox" to="." method="_on_fullscreen_checkbox_mouse_exited"]

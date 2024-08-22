@@ -17,6 +17,7 @@ var current_movement_direction : MovementDirection
 @onready var ray_cast_2d_up_left = $RayCast2DUpLeft
 
 @export_group("Movement Characteristics")
+@export var ray_cast_size : float = 32
 @export var MOVEMENT_IN_PIXELS = 32
 @export var SPEED_DELAY_FACTOR = 5
 @export var show_console_output : bool = false
@@ -85,6 +86,10 @@ func _ready():
 	pass
 
 func _process(delta):
+	ray_cast_2d_down.target_position = Vector2(0, +ray_cast_size)
+	ray_cast_2d_right.target_position = Vector2(+ray_cast_size, 0)
+	ray_cast_2d_left.target_position = Vector2(-ray_cast_size, 0)
+	ray_cast_2d_up.target_position = Vector2(0, -ray_cast_size)
 	viewport_dimensions = get_viewport_rect().size
 	if level_has_started and update_function == 0:
 		if show_console_output:
@@ -113,6 +118,8 @@ func _unhandled_key_input(event):
 							move_up()
 						Key.KEY_DOWN:
 							move_down()
+						Key.KEY_T:
+							print(ray_cast_2d_down.get_collision_point())
 	pass
 	
 func _unhandled_input(event):

@@ -1,21 +1,21 @@
 [gd_scene load_steps=3 format=3 uid="uid://mmth50xyuquq"]
 
-[ext_resource type="Texture2D" uid="uid://dh3p7nv6p66ib" path="res://assets/sprites/1280px-ISO_7010_E002_new.svg_.png" id="1_1ocg2"]
+[ext_resource type="Texture2D" uid="uid://dts40w0g0d0bs" path="res://assets/sprites/ExitSign.png" id="1_ev6jb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ydire"]
 size = Vector2(64, 64)
 
 [node name="Area2D" type="Area2D"]
 
-[node name="Polygon2D" type="Polygon2D" parent="."]
-visible = false
-color = Color(0, 0.78, 0.468, 0.607843)
-polygon = PackedVector2Array(-32, -32, -32, 32, 32, 32, 32, -32)
+[node name="GraphicsSprite2D" type="Sprite2D" parent="."]
+scale = Vector2(2, 2)
+texture = ExtResource("1_ev6jb")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_ydire")
 debug_color = Color(0, 0.6, 0.7, 0.42)
 
-[node name="GraphicsSprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.053, 0.053)
-texture = ExtResource("1_1ocg2")
+[node name="Polygon2D" type="Polygon2D" parent="."]
+visible = false
+color = Color(0, 0.78, 0.468, 0.607843)
+polygon = PackedVector2Array(-32, -32, -32, 32, 32, 32, 32, -32)

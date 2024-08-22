@@ -38,3 +38,21 @@ func _unhandled_input(event):
 			match event.button_index:
 				JOY_BUTTON_START:
 					inform_game_that_return_button_has_been_pressed.emit(true)
+
+func _on_background_music_slider_drag_ended(_value_changed):
+	background_music_slider.release_focus()
+
+func _on_sound_effects_slider_drag_ended(_value_changed):
+	sound_effects_slider.release_focus()
+
+func _on_fullscreen_checkbox_mouse_entered():
+	fullscreen_checkbox.grab_focus()
+
+func _on_fullscreen_checkbox_mouse_exited():
+	fullscreen_checkbox.release_focus()
+
+func _on_return_button_mouse_entered():
+	return_button.grab_focus()
+
+func _on_return_button_mouse_exited():
+	return_button.release_focus()

@@ -30,6 +30,10 @@ window/stretch/mode="viewport"
 
 project/assembly_name="Beat The Robot"
 
+[gui]
+
+theme/custom_font="res://assets/fonts/PixelOperator8.ttf"
+
 [input]
 
 player_move_left={

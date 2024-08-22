@@ -5,6 +5,14 @@ class_name BeatTheRobotGame
 enum CameraMode { NONE, CANVAS, CENTER, FREE }
 
 @export_group("Game")
+
+#@export var vsync_enabled : bool = true :
+	#set(value):
+		#if value:
+			#DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
+		#else:
+			#DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+
 @export var enable_dynamic_drawing : bool = false
 @export var hide_mouse_cursor : bool = false
 @export var visual_debug_mode : bool = true
@@ -36,15 +44,21 @@ var player_has_started_game_from_main_menu : bool = false
 signal inform_player_level_has_started
 signal inform_player_level_has_finished
 
-enum Scenes { HOME, LEVEL01, LEVEL02, CREDITS }
+enum Scenes { HOME, LEVEL01, LEVEL02, LEVEL04, CREDITS }
 var current_scene : Scenes = Scenes.HOME
 var current_scene_background_music : AudioStreamPlayer
+
 @onready var level_01_tile_map = $Levels/Level01/Level01TileMap
 @onready var level_01_robot_path = $Levels/Level01/Level01RobotPath
 @onready var level_01_background_music = $Levels/Level01/Level01BackgroundMusic
+
 @onready var level_02_tile_map = $Levels/Level02/Level02TileMap
 @onready var level_02_robot_path = $Levels/Level02/Level02RobotPath
 @onready var level_02_background_music = $Levels/Level02/Level02BackgroundMusic
+
+@onready var level_04_tile_map = $Levels/Level04/Level04TileMap
+@onready var level_04_robot_path = $Levels/Level04/Level04RobotPath
+
 @onready var credits_background_music = $Levels/Credits/CreditsBackgroundMusic
 @onready var home_ui = $CanvasLayer/HomeUI
 @onready var home_ui_background_music = $CanvasLayer/HomeUI/HomeUIBackgroundMusic
@@ -75,6 +89,8 @@ func disable_all_levels():
 	level_01_tile_map.set_layer_enabled(0, false)
 	level_02_robot_path.visible = false
 	level_02_tile_map.set_layer_enabled(0, false)
+	level_04_robot_path.visible = false
+	level_04_tile_map.set_layer_enabled(0, false)
 
 func enable_level(robot_path_to_enable : Path2D, tile_map_to_enable : TileMap):
 	robot_path_to_enable.visible = true
@@ -122,6 +138,16 @@ func reset_scene(scene : Scenes):
 			start_level_screen.visible = true
 			start_delay_timer_out = false
 			robot_path_following.progress = 0
+		Scenes.LEVEL04:
+			player_node.set_position(Vector2(96, 96))
+			start_level_screen.update_level_label("Level : 04")
+			robot_path.curve = level_04_robot_path.curve
+			goal_area.set_position(robot_path.curve.get_point_position(robot_path.curve.point_count - 1))
+			disable_all_levels()
+			enable_level(level_04_robot_path, level_04_tile_map)
+			start_level_screen.visible = true
+			start_delay_timer_out = false
+			robot_path_following.progress = 0
 		Scenes.CREDITS:
 			goal_area.set_position(Vector2(512, 512))
 			player_node.set_position(Vector2(512 - 128, 512))
@@ -152,7 +178,10 @@ func next_scene(scene : Scenes):
 		Scenes.LEVEL01:
 			current_scene_background_music = level_02_background_music
 			return Scenes.LEVEL02
-		_:
+		Scenes.LEVEL02:
+			current_scene_background_music = credits_background_music
+			return Scenes.LEVEL04
+		Scenes.LEVEL04:
 			current_scene_background_music = credits_background_music
 			return Scenes.CREDITS
 
@@ -166,6 +195,10 @@ func cycle_scenes():
 		current_scene = Scenes.LEVEL02
 		home_ui.player_is_playing_a_level = true
 	elif current_scene == Scenes.LEVEL02:
+		current_scene_background_music = credits_background_music
+		current_scene = Scenes.LEVEL04
+		home_ui.player_is_playing_a_level = true
+	elif current_scene == Scenes.LEVEL04:
 		current_scene_background_music = credits_background_music
 		current_scene = Scenes.CREDITS
 		home_ui.player_is_playing_a_level = true
@@ -363,7 +396,6 @@ func _on_settings_menu_inform_game_that_return_button_has_been_pressed(from_game
 
 func draw_grid():
 	var viewport_dimensions = get_viewport_rect().size
-	print(viewport_dimensions)
 	# NOTE : On Windows the fullscreen mode takes 1 pixel for each border (read Godot documentation)
 	if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
 		viewport_dimensions += Vector2(2, 2)
