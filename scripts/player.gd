@@ -90,7 +90,8 @@ func _process(delta):
 	ray_cast_2d_right.target_position = Vector2(+ray_cast_size, 0)
 	ray_cast_2d_left.target_position = Vector2(-ray_cast_size, 0)
 	ray_cast_2d_up.target_position = Vector2(0, -ray_cast_size)
-	viewport_dimensions = get_viewport_rect().size
+	#viewport_dimensions = get_viewport_rect().size
+	viewport_dimensions = Vector2(1024, 1024)
 	if level_has_started and update_function == 0:
 		if show_console_output:
 			print("_process called every ", delta, " seconds")

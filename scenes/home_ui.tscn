@@ -7,13 +7,13 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp7wj"]
 bg_color = Color(0.206417, 0.310296, 1, 1)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hawk4"]
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vhxyg"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8phn5"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bab1b"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hawk4"]
 
 [node name="HomeUI" type="Control" node_paths=PackedStringArray("start_game_button", "settings_game_button", "exit_game_button")]
 layout_mode = 3
@@ -23,9 +23,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_t48ok")
-start_game_button = NodePath("VBoxContainer/VBoxContainer2/StartGameButton")
-settings_game_button = NodePath("VBoxContainer/VBoxContainer2/SettingsButton")
-exit_game_button = NodePath("VBoxContainer/VBoxContainer2/EndGameButton")
+start_game_button = NodePath("VBoxContainer/VBoxContainer2/VBoxContainer3/StartGameButton")
+settings_game_button = NodePath("VBoxContainer/VBoxContainer2/VBoxContainer3/SettingsButton")
+exit_game_button = NodePath("VBoxContainer/VBoxContainer2/VBoxContainer3/EndGameButton")
 
 [node name="UnusedColorRect" type="ColorRect" parent="."]
 layout_mode = 0
@@ -49,54 +49,59 @@ text = "Beat The Robot"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 60
-theme_override_styles/separator = SubResource("StyleBoxEmpty_hawk4")
+size_flags_horizontal = 4
+size_flags_vertical = 6
 
-[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/VBoxContainer2"]
 layout_mode = 2
 
-[node name="RobotTexture" type="TextureRect" parent="VBoxContainer/CenterContainer"]
+[node name="RobotTexture" type="TextureRect" parent="VBoxContainer/VBoxContainer2/CenterContainer"]
 custom_minimum_size = Vector2(512, 512)
 layout_mode = 2
 texture = ExtResource("2_psd1h")
 stretch_mode = 4
 
-[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/VBoxContainer2"]
 layout_mode = 2
 theme_override_constants/separation = 64
 theme_override_styles/separator = SubResource("StyleBoxEmpty_vhxyg")
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer"]
+[node name="VBoxContainer3" type="VBoxContainer" parent="VBoxContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="StartGameButton" type="Button" parent="VBoxContainer/VBoxContainer2"]
+[node name="StartGameButton" type="Button" parent="VBoxContainer/VBoxContainer2/VBoxContainer3"]
 custom_minimum_size = Vector2(512, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "Start Game"
 
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/VBoxContainer2"]
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/VBoxContainer2/VBoxContainer3"]
 layout_mode = 2
 theme_override_constants/separation = 32
 theme_override_styles/separator = SubResource("StyleBoxEmpty_8phn5")
 
-[node name="SettingsButton" type="Button" parent="VBoxContainer/VBoxContainer2"]
+[node name="SettingsButton" type="Button" parent="VBoxContainer/VBoxContainer2/VBoxContainer3"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "Settings"
 
-[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/VBoxContainer2"]
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/VBoxContainer2/VBoxContainer3"]
 layout_mode = 2
 theme_override_constants/separation = 32
 theme_override_styles/separator = SubResource("StyleBoxEmpty_bab1b")
 
-[node name="EndGameButton" type="Button" parent="VBoxContainer/VBoxContainer2"]
+[node name="EndGameButton" type="Button" parent="VBoxContainer/VBoxContainer2/VBoxContainer3"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "Exit Game"
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 64
+theme_override_styles/separator = SubResource("StyleBoxEmpty_hawk4")
 
 [node name="JoyPadDPadEventTimer" type="Timer" parent="."]
 wait_time = 0.1
@@ -109,8 +114,8 @@ stream = ExtResource("3_8fcbe")
 bus = &"Sound Effects"
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
-[connection signal="mouse_entered" from="VBoxContainer/VBoxContainer2/StartGameButton" to="." method="_on_start_game_button_mouse_entered"]
-[connection signal="pressed" from="VBoxContainer/VBoxContainer2/StartGameButton" to="." method="_on_start_game_button_pressed"]
-[connection signal="mouse_entered" from="VBoxContainer/VBoxContainer2/SettingsButton" to="." method="_on_settings_button_mouse_entered"]
-[connection signal="pressed" from="VBoxContainer/VBoxContainer2/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="mouse_entered" from="VBoxContainer/VBoxContainer2/VBoxContainer3/StartGameButton" to="." method="_on_start_game_button_mouse_entered"]
+[connection signal="pressed" from="VBoxContainer/VBoxContainer2/VBoxContainer3/StartGameButton" to="." method="_on_start_game_button_pressed"]
+[connection signal="mouse_entered" from="VBoxContainer/VBoxContainer2/VBoxContainer3/SettingsButton" to="." method="_on_settings_button_mouse_entered"]
+[connection signal="pressed" from="VBoxContainer/VBoxContainer2/VBoxContainer3/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="timeout" from="JoyPadDPadEventTimer" to="." method="_on_joy_pad_d_pad_event_timer_timeout"]

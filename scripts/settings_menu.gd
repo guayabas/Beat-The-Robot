@@ -6,6 +6,8 @@ class_name BeatTheRobotSettingsMenu
 @export var fullscreen_checkbox : CheckBox
 @export var return_button : Button
 
+@onready var color_rect = $ColorRect
+
 signal inform_game_that_return_button_has_been_pressed(from_game_controller:bool)
 
 func _ready():

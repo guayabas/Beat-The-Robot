@@ -24,7 +24,6 @@ shapes/collision/shape_color=Color(0.898039, 0, 0.764706, 0.14902)
 
 window/size/viewport_width=1024
 window/size/viewport_height=1024
-window/stretch/mode="viewport"
 
 [dotnet]
 

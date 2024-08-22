@@ -4,14 +4,19 @@ class_name BeatTheRobotGame
 
 enum CameraMode { NONE, CANVAS, CENTER, FREE }
 
+var initial_viewport_width : int = -1
+var initial_viewport_height : int = -1
+var initial_viewport_stretch_mode : String = ""
+var last_window_mode_state : DisplayServer.WindowMode
+
 @export_group("Game")
 
-#@export var vsync_enabled : bool = true :
-	#set(value):
-		#if value:
-			#DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
-		#else:
-			#DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+@export var vsync_enabled : bool = true :
+	set(value):
+		if value:
+			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
+		else:
+			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 
 @export var enable_dynamic_drawing : bool = false
 @export var hide_mouse_cursor : bool = false
@@ -23,8 +28,41 @@ enum CameraMode { NONE, CANVAS, CENTER, FREE }
 @onready var settings_menu = $CanvasLayer/SettingsMenu
 @export_subgroup("Camera")
 @export var camera_node : Camera2D
-@export var camera_mode_in_use : CameraMode = CameraMode.NONE
-@export var enable_dynamic_camera_adjustment : bool = true
+
+func do_camera_adjustment(camera_mode_to_use : CameraMode):
+	if initial_viewport_stretch_mode == "disabled":
+		var current_viewport_size = get_viewport_rect().size
+		match camera_mode_to_use:
+			CameraMode.CANVAS:
+				var camera_zoom_factor_x = float(current_viewport_size.x) / float(initial_viewport_width)
+				var camera_zoom_factor_y = float(current_viewport_size.y) / float(initial_viewport_height)
+				camera_node.zoom = Vector2(camera_zoom_factor_x, camera_zoom_factor_y)
+				camera_node.offset = Vector2.ZERO
+				camera_node.position = Vector2.ZERO
+				pass
+			CameraMode.CENTER:
+				var ratio_x = initial_viewport_width / current_viewport_size.x
+				var ratio_y = initial_viewport_height / current_viewport_size.y
+				var offset_x = (current_viewport_size.x - initial_viewport_width) * 0.5
+				var offset_y = (current_viewport_size.y - initial_viewport_height) * 0.5
+				settings_menu.color_rect.position = Vector2(offset_x, offset_y)
+				settings_menu.color_rect.scale = Vector2(ratio_x, ratio_y)
+				canvas_layer.scale = Vector2.ONE
+				camera_node.offset = Vector2(-offset_x, -offset_y)
+				camera_node.zoom = Vector2.ONE
+				pass
+			CameraMode.NONE:
+				camera_node.position = Vector2.ZERO
+				camera_node.zoom = Vector2.ONE
+			CameraMode.FREE, _:
+				pass
+
+@export var camera_mode_in_use : CameraMode = CameraMode.CENTER :
+	set(value):
+		camera_mode_in_use = value
+		do_camera_adjustment(value)
+
+@export var enable_dynamic_camera_adjustment : bool = false
 
 @export_group("Player")
 @export var player_node : CharacterBody2D
@@ -66,10 +104,7 @@ var current_scene_background_music : AudioStreamPlayer
 @onready var enter_settings_menu_sound = $CanvasLayer/SettingsMenu/EnterSettingsMenuSound
 @onready var exit_settings_menu_sound = $CanvasLayer/SettingsMenu/ExitSettingsMenuSound
 
-var initial_viewport_width : int = -1
-var initial_viewport_height : int = -1
-var initial_viewport_stretch_mode : String = ""
-var last_window_mode_state : DisplayServer.WindowMode
+@onready var canvas_layer = $CanvasLayer
 
 func toggle_fullscreen() -> void:
 	# TODO : There is a bug when the window goes from maximized
@@ -208,27 +243,6 @@ func cycle_scenes():
 		home_ui.player_is_playing_a_level = false
 		home_ui.start_focus_on_start_button()
 
-func do_camera_adjustment(camera_mode_to_use : CameraMode):
-	var current_viewport_size = get_viewport_rect().size
-	match camera_mode_to_use:
-		CameraMode.CANVAS:
-			var camera_zoom_factor_x = float(current_viewport_size.x) / float(initial_viewport_width)
-			var camera_zoom_factor_y = float(current_viewport_size.y) / float(initial_viewport_height)
-			camera_node.zoom = Vector2(camera_zoom_factor_x, camera_zoom_factor_y)
-			camera_node.position = Vector2.ZERO
-			pass
-		CameraMode.CENTER:
-			var offset_x = (current_viewport_size.x - initial_viewport_width) * 0.5
-			var offset_y = (current_viewport_size.y - initial_viewport_height) * 0.5
-			camera_node.position = Vector2(-offset_x, -offset_y)
-			camera_node.zoom = Vector2.ONE
-			pass
-		CameraMode.NONE:
-			camera_node.position = Vector2.ZERO
-			camera_node.zoom = Vector2.ONE
-		CameraMode.FREE, _:
-			pass
-
 func _init():
 	# NOTE : Hack to bring the window to foreground in the OS when the game
 	# launches automatically in fullscreen mode. Maybe grab the current mode directly
@@ -258,6 +272,7 @@ func _ready():
 	settings_menu.visible = false
 	settings_menu.background_music_slider.value = 0.5
 	settings_menu.sound_effects_slider.value = 0.5
+	do_camera_adjustment(camera_mode_in_use)
 	pass
 
 func _process(delta):
@@ -269,7 +284,7 @@ func _process(delta):
 		robot_path_following.progress += ((64 * 4) * delta)
 	if enable_dynamic_drawing:
 		self.queue_redraw()
-	if enable_dynamic_camera_adjustment and initial_viewport_stretch_mode == "disabled":
+	if enable_dynamic_camera_adjustment:
 		do_camera_adjustment(camera_mode_in_use)
 	pass
 
@@ -291,6 +306,7 @@ func _unhandled_key_input(event):
 			if event.pressed:
 				if event.keycode == Key.KEY_ENTER:
 					toggle_fullscreen()
+					do_camera_adjustment(camera_mode_in_use)
 		else:
 			if event.pressed and !event.echo:
 				match event.keycode:
@@ -317,7 +333,6 @@ func _unhandled_key_input(event):
 						current_scene_background_music.play()
 
 func _unhandled_input(event):
-	#print(event)
 	if event is InputEventJoypadMotion:
 		if abs(event.axis_value) > 0.5:
 			start_level()
@@ -327,7 +342,7 @@ func _unhandled_input(event):
 				JOY_BUTTON_DPAD_LEFT, JOY_BUTTON_DPAD_RIGHT, JOY_BUTTON_DPAD_DOWN, JOY_BUTTON_DPAD_UP:
 					start_level()
 	elif event is InputEventMouseButton:
-		if initial_viewport_stretch_mode == "disabled":
+		if initial_viewport_stretch_mode == "disabled" and camera_mode_in_use == CameraMode.FREE:
 			match event.button_index:
 				MOUSE_BUTTON_WHEEL_DOWN:
 					camera_node.zoom += Vector2(0.1, 0.1)
@@ -336,7 +351,7 @@ func _unhandled_input(event):
 					camera_node.zoom -= Vector2(0.1, 0.1)
 					pass
 	elif event is InputEventMouseMotion:
-		if initial_viewport_stretch_mode == "disabled":
+		if initial_viewport_stretch_mode == "disabled" and camera_mode_in_use == CameraMode.FREE:
 			match event.button_mask:
 				MOUSE_BUTTON_LEFT:
 					camera_node.position.x -= event.relative.x
@@ -395,10 +410,11 @@ func _on_settings_menu_inform_game_that_return_button_has_been_pressed(from_game
 		settings_menu.return_button.grab_focus()
 
 func draw_grid():
-	var viewport_dimensions = get_viewport_rect().size
-	# NOTE : On Windows the fullscreen mode takes 1 pixel for each border (read Godot documentation)
-	if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
-		viewport_dimensions += Vector2(2, 2)
+	#var viewport_dimensions = get_viewport_rect().size
+	## NOTE : On Windows the fullscreen mode takes 1 pixel for each border (read Godot documentation)
+	#if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
+		#viewport_dimensions += Vector2(2, 2)
+	var viewport_dimensions = Vector2(1024, 1024)
 	var pixel_grid_size = (viewport_dimensions / grid_size)
 	var custom_gray = Color.GRAY
 	custom_gray.a = 0.3
