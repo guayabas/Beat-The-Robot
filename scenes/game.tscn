@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://rtwap0tlb660"]
+[gd_scene load_steps=22 format=3 uid="uid://rtwap0tlb660"]
 
 [ext_resource type="PackedScene" uid="uid://gdxrcfwyvtq1" path="res://scenes/level_01_tilemap.tscn" id="1_ep76x"]
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_sj8bf"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://bq4ft788uuesj" path="res://scenes/level_04_tilemap.tscn" id="7_m1dw6"]
 [ext_resource type="AudioStream" uid="uid://ltwja2c1hhks" path="res://assets/audio/Stream Loops 2024-02-21_01.ogg" id="7_reh8n"]
 [ext_resource type="PackedScene" uid="uid://if7yybfb42dl" path="res://scenes/home_ui.tscn" id="11_18tj5"]
+[ext_resource type="PackedScene" uid="uid://4o8gmcvn6qvs" path="res://scenes/level_selection.tscn" id="12_47a0v"]
 [ext_resource type="AudioStream" uid="uid://cvx0hvox5qxpj" path="res://assets/audio/Stream Loops 2024-02-14_L01.ogg" id="12_nnq5x"]
 [ext_resource type="PackedScene" uid="uid://bvubimhmlqj42" path="res://scenes/settings_menu.tscn" id="13_u1d37"]
 [ext_resource type="AudioStream" uid="uid://cjgsxeyxk8tfo" path="res://assets/audio/sounds/JDSherbert - Ultimate UI SFX Pack - Popup Open - 1.ogg" id="14_t7j0s"]
@@ -123,6 +124,8 @@ collision_mask = 3
 
 [node name="StartLevelScreen" parent="CanvasLayer" instance=ExtResource("7_6mv3e")]
 
+[node name="LevelSelectionMenu" parent="CanvasLayer" instance=ExtResource("12_47a0v")]
+
 [node name="HomeUI" parent="CanvasLayer" instance=ExtResource("11_18tj5")]
 
 [node name="HomeUIBackgroundMusic" type="AudioStreamPlayer" parent="CanvasLayer/HomeUI"]
@@ -143,6 +146,7 @@ bus = &"Sound Effects"
 [connection signal="inform_player_level_has_started" from="." to="." method="_on_inform_player_level_has_started"]
 [connection signal="body_entered" from="Levels/GoalArea" to="." method="_on_area_2d_body_entered"]
 [connection signal="timeout" from="Levels/StartDelayTimer" to="." method="_on_start_delay_timeout"]
+[connection signal="inform_game_that_level_has_been_selected_from_ui" from="CanvasLayer/LevelSelectionMenu" to="." method="_on_level_selection_menu_inform_game_that_level_has_been_selected_from_ui"]
 [connection signal="inform_game_that_settings_screen_are_displayed" from="CanvasLayer/HomeUI" to="." method="_on_home_ui_inform_game_that_settings_screen_are_displayed"]
 [connection signal="inform_game_that_user_has_started_game" from="CanvasLayer/HomeUI" to="." method="_on_home_ui_inform_game_that_user_has_started_game"]
 [connection signal="inform_game_that_return_button_has_been_pressed" from="CanvasLayer/SettingsMenu" to="." method="_on_settings_menu_inform_game_that_return_button_has_been_pressed"]

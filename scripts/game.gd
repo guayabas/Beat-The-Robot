@@ -82,7 +82,7 @@ var player_has_started_game_from_main_menu : bool = false
 signal inform_player_level_has_started
 signal inform_player_level_has_finished
 
-enum Scenes { HOME, LEVEL01, LEVEL02, LEVEL04, CREDITS }
+enum Scenes { HOME = 0, LEVELSELECTION, LEVEL01, LEVEL02, LEVEL04, CREDITS }
 var current_scene : Scenes = Scenes.HOME
 var current_scene_background_music : AudioStreamPlayer
 
@@ -105,6 +105,8 @@ var current_scene_background_music : AudioStreamPlayer
 @onready var exit_settings_menu_sound = $CanvasLayer/SettingsMenu/ExitSettingsMenuSound
 
 @onready var canvas_layer = $CanvasLayer
+
+@onready var level_selection_menu = $CanvasLayer/LevelSelectionMenu
 
 func toggle_fullscreen() -> void:
 	# TODO : There is a bug when the window goes from maximized
@@ -131,14 +133,20 @@ func enable_level(robot_path_to_enable : Path2D, tile_map_to_enable : TileMap):
 	robot_path_to_enable.visible = true
 	tile_map_to_enable.set_layer_enabled(0, true)
 
-func is_scene_home_scene(scene : Scenes):
-	if scene == Scenes.HOME:
-		home_ui.visible = true
+func is_scene_home_scene_or_level_selection(scene : Scenes):
+	if scene == Scenes.HOME or scene == Scenes.LEVELSELECTION:
 		player_node.visible = false
 		goal_area.visible = false
 		robot_node.visible = false
+		if scene == Scenes.HOME:
+			home_ui.visible = true
+			level_selection_menu.visible = false
+		else:
+			home_ui.visible = false
+			level_selection_menu.visible = true
 	else:
 		home_ui.visible = false
+		level_selection_menu.visible = false
 		player_node.visible = true
 		goal_area.visible = true
 		robot_node.visible = true
@@ -146,9 +154,9 @@ func is_scene_home_scene(scene : Scenes):
 func reset_scene(scene : Scenes):
 	inform_player_level_has_finished.emit()
 	level_has_started = false
-	is_scene_home_scene(scene)
+	is_scene_home_scene_or_level_selection(scene)
 	match scene:
-		Scenes.HOME:
+		Scenes.HOME, Scenes.LEVELSELECTION:
 			player_node.set_position(Vector2.ZERO)
 			goal_area.set_position(Vector2(1024, 1024))
 			disable_all_levels()
@@ -209,7 +217,10 @@ func next_scene(scene : Scenes):
 	match scene:
 		Scenes.HOME:
 			current_scene_background_music = level_01_background_music
-			return Scenes.LEVEL01
+			return Scenes.LEVELSELECTION
+		Scenes.LEVELSELECTION:
+			current_scene_background_music = level_01_background_music
+			return Scenes.CREDITS
 		Scenes.LEVEL01:
 			current_scene_background_music = level_02_background_music
 			return Scenes.LEVEL02
@@ -222,6 +233,10 @@ func next_scene(scene : Scenes):
 
 func cycle_scenes():
 	if current_scene == Scenes.HOME:
+		current_scene_background_music = level_01_background_music
+		current_scene = Scenes.LEVELSELECTION
+		home_ui.player_is_playing_a_level = true
+	elif current_scene == Scenes.LEVELSELECTION:
 		current_scene_background_music = level_01_background_music
 		current_scene = Scenes.LEVEL01
 		home_ui.player_is_playing_a_level = true
@@ -326,7 +341,7 @@ func _unhandled_key_input(event):
 						start_level()
 					KEY_ESCAPE:
 						pass
-					KEY_TAB:
+					KEY_1:
 						current_scene_background_music.stop()
 						cycle_scenes()
 						reset_scene(current_scene)
@@ -408,6 +423,20 @@ func _on_settings_menu_inform_game_that_return_button_has_been_pressed(from_game
 		else:
 			exit_settings_menu_sound.play()
 		settings_menu.return_button.grab_focus()
+
+func _on_level_selection_menu_inform_game_that_level_has_been_selected_from_ui(selected_level_id : int):
+	current_scene_background_music.stop()
+
+	# NOTE : The +1 is because I am mapping the simple selected_level_id from the signal to the enum Scenes
+	# would be better if I put a function or a more explicit call of such cast. Also notice I am leaving
+	# a check to return home in case I am accessing a scene not yet done
+	current_scene = (selected_level_id + 1)
+	if (current_scene >= Scenes.CREDITS):
+		print("Scene ", selected_level_id, " not build yet ...")
+		current_scene = Scenes.HOME
+
+	reset_scene(current_scene)
+	current_scene_background_music.play()
 
 func draw_grid():
 	#var viewport_dimensions = get_viewport_rect().size

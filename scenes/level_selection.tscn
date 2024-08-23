@@ -1,0 +1,121 @@
+[gd_scene load_steps=6 format=3 uid="uid://4o8gmcvn6qvs"]
+
+[ext_resource type="Script" path="res://scripts/level_selection.gd" id="1_ukx61"]
+[ext_resource type="PackedScene" uid="uid://cxhsyq0ewhyxs" path="res://scenes/level_selection_container_button.tscn" id="5_masxo"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0ldvh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w2t52"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2lbrc"]
+
+[node name="LevelSelectionMenu" type="Control" node_paths=PackedStringArray("level_selection_container_button_1", "level_selection_container_button_2", "level_selection_container_button_3", "level_selection_container_button_4", "level_selection_container_button_5", "level_selection_container_button_6", "level_selection_container_button_7", "level_selection_container_button_8", "level_selection_container_button_9")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ukx61")
+level_selection_container_button_1 = NodePath("CenterContainer/GridContainer/VBoxContainerLeft/LevelSelectionVBoxContainer1")
+level_selection_container_button_2 = NodePath("CenterContainer/GridContainer/VBoxContainerLeft/LevelSelectionVBoxContainer2")
+level_selection_container_button_3 = NodePath("CenterContainer/GridContainer/VBoxContainerLeft/LevelSelectionVBoxContainer3")
+level_selection_container_button_4 = NodePath("CenterContainer/GridContainer/VBoxContainerMiddle/LevelSelectionVBoxContainer1")
+level_selection_container_button_5 = NodePath("CenterContainer/GridContainer/VBoxContainerMiddle/LevelSelectionVBoxContainer2")
+level_selection_container_button_6 = NodePath("CenterContainer/GridContainer/VBoxContainerMiddle/LevelSelectionVBoxContainer3")
+level_selection_container_button_7 = NodePath("CenterContainer/GridContainer/VBoxContainerRight/LevelSelectionVBoxContainer1")
+level_selection_container_button_8 = NodePath("CenterContainer/GridContainer/VBoxContainerRight/LevelSelectionVBoxContainer2")
+level_selection_container_button_9 = NodePath("CenterContainer/GridContainer/VBoxContainerRight/LevelSelectionVBoxContainer3")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BackgroundCenterContainerColorRect" type="ColorRect" parent="CenterContainer"]
+custom_minimum_size = Vector2(512, 512)
+layout_mode = 2
+color = Color(0, 0, 0, 0)
+
+[node name="GridContainer" type="GridContainer" parent="CenterContainer"]
+layout_mode = 2
+columns = 5
+
+[node name="VBoxContainerLeft" type="VBoxContainer" parent="CenterContainer/GridContainer"]
+layout_mode = 2
+
+[node name="LevelSelectionVBoxContainer1" parent="CenterContainer/GridContainer/VBoxContainerLeft" instance=ExtResource("5_masxo")]
+layout_mode = 2
+
+[node name="HSeparatorTM" type="HSeparator" parent="CenterContainer/GridContainer/VBoxContainerLeft"]
+layout_mode = 2
+theme_override_constants/separation = 8
+theme_override_styles/separator = SubResource("StyleBoxEmpty_0ldvh")
+
+[node name="LevelSelectionVBoxContainer2" parent="CenterContainer/GridContainer/VBoxContainerLeft" instance=ExtResource("5_masxo")]
+layout_mode = 2
+
+[node name="HSeparatorMB" type="HSeparator" parent="CenterContainer/GridContainer/VBoxContainerLeft"]
+layout_mode = 2
+theme_override_constants/separation = 8
+theme_override_styles/separator = SubResource("StyleBoxEmpty_0ldvh")
+
+[node name="LevelSelectionVBoxContainer3" parent="CenterContainer/GridContainer/VBoxContainerLeft" instance=ExtResource("5_masxo")]
+layout_mode = 2
+
+[node name="VSeparatorLM" type="VSeparator" parent="CenterContainer/GridContainer"]
+layout_mode = 2
+theme_override_constants/separation = 32
+theme_override_styles/separator = SubResource("StyleBoxEmpty_w2t52")
+
+[node name="VBoxContainerMiddle" type="VBoxContainer" parent="CenterContainer/GridContainer"]
+layout_mode = 2
+
+[node name="LevelSelectionVBoxContainer1" parent="CenterContainer/GridContainer/VBoxContainerMiddle" instance=ExtResource("5_masxo")]
+layout_mode = 2
+
+[node name="HSeparatorTM" type="HSeparator" parent="CenterContainer/GridContainer/VBoxContainerMiddle"]
+layout_mode = 2
+theme_override_constants/separation = 8
+theme_override_styles/separator = SubResource("StyleBoxEmpty_0ldvh")
+
+[node name="LevelSelectionVBoxContainer2" parent="CenterContainer/GridContainer/VBoxContainerMiddle" instance=ExtResource("5_masxo")]
+layout_mode = 2
+
+[node name="HSeparatorMB" type="HSeparator" parent="CenterContainer/GridContainer/VBoxContainerMiddle"]
+layout_mode = 2
+theme_override_constants/separation = 8
+theme_override_styles/separator = SubResource("StyleBoxEmpty_0ldvh")
+
+[node name="LevelSelectionVBoxContainer3" parent="CenterContainer/GridContainer/VBoxContainerMiddle" instance=ExtResource("5_masxo")]
+layout_mode = 2
+
+[node name="VSeparatorMR" type="VSeparator" parent="CenterContainer/GridContainer"]
+layout_mode = 2
+theme_override_constants/separation = 32
+theme_override_styles/separator = SubResource("StyleBoxEmpty_2lbrc")
+
+[node name="VBoxContainerRight" type="VBoxContainer" parent="CenterContainer/GridContainer"]
+layout_mode = 2
+
+[node name="LevelSelectionVBoxContainer1" parent="CenterContainer/GridContainer/VBoxContainerRight" instance=ExtResource("5_masxo")]
+layout_mode = 2
+
+[node name="HSeparatorTM" type="HSeparator" parent="CenterContainer/GridContainer/VBoxContainerRight"]
+layout_mode = 2
+theme_override_constants/separation = 8
+theme_override_styles/separator = SubResource("StyleBoxEmpty_0ldvh")
+
+[node name="LevelSelectionVBoxContainer2" parent="CenterContainer/GridContainer/VBoxContainerRight" instance=ExtResource("5_masxo")]
+layout_mode = 2
+
+[node name="HSeparatorMB" type="HSeparator" parent="CenterContainer/GridContainer/VBoxContainerRight"]
+layout_mode = 2
+theme_override_constants/separation = 8
+theme_override_styles/separator = SubResource("StyleBoxEmpty_0ldvh")
+
+[node name="LevelSelectionVBoxContainer3" parent="CenterContainer/GridContainer/VBoxContainerRight" instance=ExtResource("5_masxo")]
+layout_mode = 2

@@ -13,8 +13,12 @@ config_version=5
 config/name="Beat The Robot"
 run/main_scene="res://scenes/game.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
+boot_splash/bg_color=Color(0.53, 0.53, 0.53, 1)
+boot_splash/image="res://assets/logos/RelativityGamesWithFont512x512.png"
+boot_splash/use_filter=false
 config/icon="res://icon.svg"
-config/windows_native_icon="res://assets/logos/RelativityGamesLogoGimp.ico"
+config/windows_native_icon="res://assets/logos/BeatTheRobotIconGimp.ico"
+boot_splash/minimum_display_time=3500
 
 [debug]
 
@@ -24,10 +28,16 @@ shapes/collision/shape_color=Color(0.898039, 0, 0.764706, 0.14902)
 
 window/size/viewport_width=1024
 window/size/viewport_height=1024
+window/size/mode=3
+window/stretch/mode="viewport"
 
 [dotnet]
 
 project/assembly_name="Beat The Robot"
+
+[editor]
+
+movie_writer/movie_file="C:/Users/aleja/Desktop/Games/BeatTheRobot.avi"
 
 [gui]
 

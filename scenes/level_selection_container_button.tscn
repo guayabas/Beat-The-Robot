@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://cxhsyq0ewhyxs"]
+
+[ext_resource type="Script" path="res://scripts/level_selection_container_button.gd" id="1_271wt"]
+[ext_resource type="Texture2D" uid="uid://tp6yvnqdywga" path="res://assets/sprites/level_selection_normal.png" id="1_wxxj5"]
+[ext_resource type="Texture2D" uid="uid://dex7n1hmb0mog" path="res://assets/sprites/level_selection_hover.png" id="2_iueok"]
+[ext_resource type="Texture2D" uid="uid://eyddkgaqykl6" path="res://assets/sprites/level_selection_focused.png" id="4_yi1gd"]
+
+[node name="LevelSelectionVBoxContainer" type="VBoxContainer"]
+offset_right = 132.0
+offset_bottom = 156.0
+script = ExtResource("1_271wt")
+
+[node name="TextureButton" type="TextureButton" parent="."]
+layout_mode = 2
+texture_normal = ExtResource("1_wxxj5")
+texture_hover = ExtResource("2_iueok")
+texture_focused = ExtResource("4_yi1gd")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Level X"
+horizontal_alignment = 1
