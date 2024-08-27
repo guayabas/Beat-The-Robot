@@ -18,7 +18,6 @@ boot_splash/image="res://assets/logos/RelativityGamesWithFont512x512.png"
 boot_splash/use_filter=false
 config/icon="res://icon.svg"
 config/windows_native_icon="res://assets/logos/BeatTheRobotIconGimp.ico"
-boot_splash/minimum_display_time=3500
 
 [debug]
 
@@ -28,7 +27,6 @@ shapes/collision/shape_color=Color(0.898039, 0, 0.764706, 0.14902)
 
 window/size/viewport_width=1024
 window/size/viewport_height=1024
-window/size/mode=3
 window/stretch/mode="viewport"
 
 [dotnet]

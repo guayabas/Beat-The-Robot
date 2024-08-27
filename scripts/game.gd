@@ -2,34 +2,92 @@ extends Node2D
 
 class_name BeatTheRobotGame
 
-enum CameraMode { NONE, CANVAS, CENTER, FREE }
-
 var initial_viewport_width : int = -1
 var initial_viewport_height : int = -1
 var initial_viewport_stretch_mode : String = ""
 var last_window_mode_state : DisplayServer.WindowMode
 
 @export_group("Game")
-
 @export var vsync_enabled : bool = true :
 	set(value):
 		if value:
 			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
 		else:
 			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
-
 @export var enable_dynamic_drawing : bool = false
 @export var hide_mouse_cursor : bool = false
-@export var visual_debug_mode : bool = true
+@export var godot_visual_debug_mode : bool = true
 @export var show_world_grid : bool = true
+
 @export_subgroup("Grid Properties")
 @export var grid_size : int = 32
 @export var grid_thickness : float = 2.0
-@onready var settings_menu = $CanvasLayer/SettingsMenu
-@export_subgroup("Camera")
-@export var camera_node : Camera2D
 
-func do_camera_adjustment(camera_mode_to_use : CameraMode):
+@export_subgroup("Camera")
+enum CameraMode { NONE, CANVAS, CENTER, FREE }
+@export var camera_node : Camera2D
+@export var camera_mode_in_use : CameraMode = CameraMode.CENTER :
+	set(value):
+		camera_mode_in_use = value
+		do_camera_adjustment(value)
+@export var enable_dynamic_camera_adjustment : bool = false
+
+@export_group("Player")
+@export var player_node : CharacterBody2D
+
+@export_group("Robot NPC")
+@export var robot_node : BeatTheRobotRobot
+@export var robot_path : Path2D
+@onready var robot_path_following = $Levels/RobotPath/RobotPathFollowing
+@onready var start_delay_timer = $Levels/StartDelayTimer
+var start_delay_timer_out : bool = false
+
+var level_has_started : bool = false
+var player_has_started_game_from_main_menu : bool = false
+signal inform_player_level_has_started
+signal inform_player_level_has_finished
+
+enum Scenes 
+{ 
+	HOME = 0, 
+	LEVELSELECTION, 
+	LEVEL01, 
+	LEVEL02, 
+	LEVEL03,
+	LEVEL04,
+	LEVEL05, 
+	CREDITS 
+}
+var current_scene : Scenes = Scenes.HOME
+var current_scene_background_music : AudioStreamPlayer
+
+@onready var goal_area = $Levels/GoalArea
+
+@onready var level_01_background_music = $Levels/Level01/Level01BackgroundMusic
+@onready var level_02_background_music = $Levels/Level02/Level02BackgroundMusic
+@onready var credits_background_music = $Levels/Credits/CreditsBackgroundMusic
+@onready var home_ui_background_music = $CanvasLayer/HomeUI/HomeUIBackgroundMusic
+@onready var enter_settings_menu_sound = $CanvasLayer/SettingsMenu/EnterSettingsMenuSound
+@onready var exit_settings_menu_sound = $CanvasLayer/SettingsMenu/ExitSettingsMenuSound
+
+@onready var level_01_tile_map = $Levels/Level01/Level01TileMap
+@onready var level_01_robot_path = $Levels/Level01/Level01RobotPath
+@onready var level_02_tile_map = $Levels/Level02/Level02TileMap
+@onready var level_02_robot_path = $Levels/Level02/Level02RobotPath
+@onready var level_03_tile_map = $Levels/Level03/Level03TileMap
+@onready var level_03_robot_path = $Levels/Level03/Level03RobotPath
+@onready var level_04_tile_map = $Levels/Level04/Level04TileMap
+@onready var level_04_robot_path = $Levels/Level04/Level04RobotPath
+@onready var level_05_tile_map = $Levels/Level05/Level05TileMap
+@onready var level_05_robot_path = $Levels/Level05/Level05RobotPath
+
+@onready var canvas_layer = $CanvasLayer
+@onready var home_ui = $CanvasLayer/HomeUI
+@onready var settings_menu = $CanvasLayer/SettingsMenu
+@onready var level_selection_menu = $CanvasLayer/LevelSelectionMenu
+@onready var start_level_screen = $CanvasLayer/StartLevelScreen
+
+func do_camera_adjustment(camera_mode_to_use : CameraMode) -> void:
 	if initial_viewport_stretch_mode == "disabled":
 		var current_viewport_size = get_viewport_rect().size
 		match camera_mode_to_use:
@@ -57,56 +115,6 @@ func do_camera_adjustment(camera_mode_to_use : CameraMode):
 			CameraMode.FREE, _:
 				pass
 
-@export var camera_mode_in_use : CameraMode = CameraMode.CENTER :
-	set(value):
-		camera_mode_in_use = value
-		do_camera_adjustment(value)
-
-@export var enable_dynamic_camera_adjustment : bool = false
-
-@export_group("Player")
-@export var player_node : CharacterBody2D
-
-@export_group("Robot NPC")
-@export var robot_node : BeatTheRobotRobot
-@export var robot_path : Path2D
-@onready var robot_path_following = $Levels/RobotPath/RobotPathFollowing
-@onready var start_delay_timer = $Levels/StartDelayTimer
-var start_delay_timer_out : bool = false
-
-@export_group("Level")
-@onready var start_level_screen = $CanvasLayer/StartLevelScreen
-@onready var goal_area = $Levels/GoalArea
-var level_has_started : bool = false
-var player_has_started_game_from_main_menu : bool = false
-signal inform_player_level_has_started
-signal inform_player_level_has_finished
-
-enum Scenes { HOME = 0, LEVELSELECTION, LEVEL01, LEVEL02, LEVEL04, CREDITS }
-var current_scene : Scenes = Scenes.HOME
-var current_scene_background_music : AudioStreamPlayer
-
-@onready var level_01_tile_map = $Levels/Level01/Level01TileMap
-@onready var level_01_robot_path = $Levels/Level01/Level01RobotPath
-@onready var level_01_background_music = $Levels/Level01/Level01BackgroundMusic
-
-@onready var level_02_tile_map = $Levels/Level02/Level02TileMap
-@onready var level_02_robot_path = $Levels/Level02/Level02RobotPath
-@onready var level_02_background_music = $Levels/Level02/Level02BackgroundMusic
-
-@onready var level_04_tile_map = $Levels/Level04/Level04TileMap
-@onready var level_04_robot_path = $Levels/Level04/Level04RobotPath
-
-@onready var credits_background_music = $Levels/Credits/CreditsBackgroundMusic
-@onready var home_ui = $CanvasLayer/HomeUI
-@onready var home_ui_background_music = $CanvasLayer/HomeUI/HomeUIBackgroundMusic
-
-@onready var enter_settings_menu_sound = $CanvasLayer/SettingsMenu/EnterSettingsMenuSound
-@onready var exit_settings_menu_sound = $CanvasLayer/SettingsMenu/ExitSettingsMenuSound
-
-@onready var canvas_layer = $CanvasLayer
-
-@onready var level_selection_menu = $CanvasLayer/LevelSelectionMenu
 
 func toggle_fullscreen() -> void:
 	# TODO : There is a bug when the window goes from maximized
@@ -126,8 +134,12 @@ func disable_all_levels():
 	level_01_tile_map.set_layer_enabled(0, false)
 	level_02_robot_path.visible = false
 	level_02_tile_map.set_layer_enabled(0, false)
+	level_03_robot_path.visible = false
+	level_03_tile_map.set_layer_enabled(0, false)
 	level_04_robot_path.visible = false
 	level_04_tile_map.set_layer_enabled(0, false)
+	level_05_robot_path.visible = false
+	level_05_tile_map.set_layer_enabled(0, false)
 
 func enable_level(robot_path_to_enable : Path2D, tile_map_to_enable : TileMap):
 	robot_path_to_enable.visible = true
@@ -181,6 +193,8 @@ func reset_scene(scene : Scenes):
 			start_level_screen.visible = true
 			start_delay_timer_out = false
 			robot_path_following.progress = 0
+		Scenes.LEVEL03:
+			pass
 		Scenes.LEVEL04:
 			player_node.set_position(Vector2(96, 96))
 			start_level_screen.update_level_label("Level : 04")
@@ -191,6 +205,8 @@ func reset_scene(scene : Scenes):
 			start_level_screen.visible = true
 			start_delay_timer_out = false
 			robot_path_following.progress = 0
+		Scenes.LEVEL05:
+			pass
 		Scenes.CREDITS:
 			goal_area.set_position(Vector2(512, 512))
 			player_node.set_position(Vector2(512 - 128, 512))
@@ -205,6 +221,14 @@ func reset_scene(scene : Scenes):
 		_:
 			pass
 
+func play_music_node_safely():
+	if current_scene_background_music:
+		current_scene_background_music.play()
+
+func stop_music_node_safely():
+	if current_scene_background_music:
+		current_scene_background_music.stop()
+
 func start_level():
 	if !level_has_started and !player_node.is_menu_settings_being_displayed:
 		level_has_started = true
@@ -213,10 +237,10 @@ func start_level():
 		start_delay_timer.start()
 
 func next_scene(scene : Scenes):
-	current_scene_background_music.stop()
+	stop_music_node_safely()
 	match scene:
 		Scenes.HOME:
-			current_scene_background_music = level_01_background_music
+			current_scene_background_music = null
 			return Scenes.LEVELSELECTION
 		Scenes.LEVELSELECTION:
 			current_scene_background_music = level_01_background_music
@@ -225,15 +249,21 @@ func next_scene(scene : Scenes):
 			current_scene_background_music = level_02_background_music
 			return Scenes.LEVEL02
 		Scenes.LEVEL02:
-			current_scene_background_music = credits_background_music
+			current_scene_background_music = null
+			return Scenes.LEVEL03
+		Scenes.LEVEL03:
+			current_scene_background_music = null
 			return Scenes.LEVEL04
 		Scenes.LEVEL04:
+			current_scene_background_music = null
+			return Scenes.LEVEL05
+		Scenes.LEVEL05:
 			current_scene_background_music = credits_background_music
 			return Scenes.CREDITS
 
 func cycle_scenes():
 	if current_scene == Scenes.HOME:
-		current_scene_background_music = level_01_background_music
+		current_scene_background_music = null
 		current_scene = Scenes.LEVELSELECTION
 		home_ui.player_is_playing_a_level = true
 	elif current_scene == Scenes.LEVELSELECTION:
@@ -245,10 +275,18 @@ func cycle_scenes():
 		current_scene = Scenes.LEVEL02
 		home_ui.player_is_playing_a_level = true
 	elif current_scene == Scenes.LEVEL02:
-		current_scene_background_music = credits_background_music
+		current_scene_background_music = null
+		current_scene = Scenes.LEVEL03
+		home_ui.player_is_playing_a_level = true
+	elif current_scene == Scenes.LEVEL03:
+		current_scene_background_music = null
 		current_scene = Scenes.LEVEL04
 		home_ui.player_is_playing_a_level = true
 	elif current_scene == Scenes.LEVEL04:
+		current_scene_background_music = null
+		current_scene = Scenes.LEVEL05
+		home_ui.player_is_playing_a_level = true
+	elif current_scene == Scenes.LEVEL05:
 		current_scene_background_music = credits_background_music
 		current_scene = Scenes.CREDITS
 		home_ui.player_is_playing_a_level = true
@@ -277,13 +315,13 @@ func _ready():
 	initial_viewport_stretch_mode = ProjectSettings.get_setting("display/window/stretch/mode")
 	if hide_mouse_cursor:
 		Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
-	get_tree().debug_collisions_hint = visual_debug_mode
-	get_tree().debug_navigation_hint = visual_debug_mode
-	get_tree().debug_paths_hint = visual_debug_mode
+	get_tree().debug_collisions_hint = godot_visual_debug_mode
+	get_tree().debug_navigation_hint = godot_visual_debug_mode
+	get_tree().debug_paths_hint = godot_visual_debug_mode
 	reset_scene(current_scene)
 	current_scene_background_music = home_ui_background_music
 	current_scene_background_music.volume_db = linear_to_db(0.5)
-	current_scene_background_music.play()
+	play_music_node_safely()
 	settings_menu.visible = false
 	settings_menu.background_music_slider.value = 0.5
 	settings_menu.sound_effects_slider.value = 0.5
@@ -296,7 +334,11 @@ func _process(delta):
 	and current_scene != Scenes.CREDITS \
 	and !robot_node.is_ray_cast_colliding() \
 	and !robot_node.is_menu_settings_being_displayed:
-		robot_path_following.progress += ((64 * 4) * delta)
+		var p1 = robot_path.curve.sample_baked(robot_path_following.progress)
+		var p2 = robot_path.curve.sample_baked(robot_path_following.progress + (64 * 4 * delta))
+		var motion = (p2 - p1)
+		if !robot_node.is_colliding(motion):
+			robot_path_following.progress += ((64 * 4) * delta)
 	if enable_dynamic_drawing:
 		self.queue_redraw()
 	if enable_dynamic_camera_adjustment:
@@ -342,10 +384,10 @@ func _unhandled_key_input(event):
 					KEY_ESCAPE:
 						pass
 					KEY_1:
-						current_scene_background_music.stop()
+						stop_music_node_safely()
 						cycle_scenes()
 						reset_scene(current_scene)
-						current_scene_background_music.play()
+						play_music_node_safely()
 
 func _unhandled_input(event):
 	if event is InputEventJoypadMotion:
@@ -377,7 +419,7 @@ func _on_area_2d_body_entered(body):
 		if body.name == "Player":
 			print("you won at level : ", current_scene)
 			current_scene = next_scene(current_scene)
-			current_scene_background_music.play()
+			play_music_node_safely()
 		elif body.name == "Robot":
 			print("you lost at level : ", current_scene)
 		reset_scene(current_scene)
@@ -395,7 +437,7 @@ func _on_start_delay_timeout():
 func _on_home_ui_inform_game_that_user_has_started_game():
 	current_scene = next_scene(current_scene)
 	reset_scene(current_scene)
-	current_scene_background_music.play()
+	play_music_node_safely()
 	home_ui.player_is_playing_a_level = true
 
 func _on_home_ui_inform_game_that_settings_screen_are_displayed():
@@ -425,7 +467,7 @@ func _on_settings_menu_inform_game_that_return_button_has_been_pressed(from_game
 		settings_menu.return_button.grab_focus()
 
 func _on_level_selection_menu_inform_game_that_level_has_been_selected_from_ui(selected_level_id : int):
-	current_scene_background_music.stop()
+	stop_music_node_safely()
 
 	# NOTE : The +1 is because I am mapping the simple selected_level_id from the signal to the enum Scenes
 	# would be better if I put a function or a more explicit call of such cast. Also notice I am leaving
@@ -436,14 +478,17 @@ func _on_level_selection_menu_inform_game_that_level_has_been_selected_from_ui(s
 		current_scene = Scenes.HOME
 
 	reset_scene(current_scene)
-	current_scene_background_music.play()
+	play_music_node_safely()
 
-func draw_grid():
-	#var viewport_dimensions = get_viewport_rect().size
-	## NOTE : On Windows the fullscreen mode takes 1 pixel for each border (read Godot documentation)
-	#if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
-		#viewport_dimensions += Vector2(2, 2)
-	var viewport_dimensions = Vector2(1024, 1024)
+func draw_grid(use_viewport_size : bool = false):
+	var viewport_dimensions = Vector2.ZERO
+	if use_viewport_size:
+		viewport_dimensions = get_viewport_rect().size
+		# NOTE : On Windows the fullscreen mode takes 1 pixel for each border (read Godot documentation)
+		if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
+			viewport_dimensions += Vector2(2, 2)
+	else:
+		viewport_dimensions = Vector2(1024, 1024)
 	var pixel_grid_size = (viewport_dimensions / grid_size)
 	var custom_gray = Color.GRAY
 	custom_gray.a = 0.3

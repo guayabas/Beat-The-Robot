@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://rtwap0tlb660"]
+[gd_scene load_steps=26 format=3 uid="uid://rtwap0tlb660"]
 
 [ext_resource type="PackedScene" uid="uid://gdxrcfwyvtq1" path="res://scenes/level_01_tilemap.tscn" id="1_ep76x"]
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_sj8bf"]
@@ -11,6 +11,8 @@
 [ext_resource type="PackedScene" uid="uid://bmo04yg3u7pha" path="res://scenes/start_level_screen.tscn" id="7_6mv3e"]
 [ext_resource type="PackedScene" uid="uid://bq4ft788uuesj" path="res://scenes/level_04_tilemap.tscn" id="7_m1dw6"]
 [ext_resource type="AudioStream" uid="uid://ltwja2c1hhks" path="res://assets/audio/Stream Loops 2024-02-21_01.ogg" id="7_reh8n"]
+[ext_resource type="PackedScene" uid="uid://dufil6qb73sj1" path="res://scenes/level_03_tilemap.tscn" id="7_xet8g"]
+[ext_resource type="PackedScene" uid="uid://c8rybhuu35jwx" path="res://scenes/level_05_tilemap.tscn" id="9_tdyas"]
 [ext_resource type="PackedScene" uid="uid://if7yybfb42dl" path="res://scenes/home_ui.tscn" id="11_18tj5"]
 [ext_resource type="PackedScene" uid="uid://4o8gmcvn6qvs" path="res://scenes/level_selection.tscn" id="12_47a0v"]
 [ext_resource type="AudioStream" uid="uid://cvx0hvox5qxpj" path="res://assets/audio/Stream Loops 2024-02-14_L01.ogg" id="12_nnq5x"]
@@ -30,17 +32,20 @@ _data = {
 }
 point_count = 4
 
+[sub_resource type="Curve2D" id="Curve2D_uy180"]
+
 [sub_resource type="Curve2D" id="Curve2D_auagk"]
 _data = {
 "points": PackedVector2Array(0, 0, 0, 0, 960, 960, 0, 0, 0, 0, 960, 576, 0, 0, 0, 0, 704, 576, 0, 0, 0, 0, 704, 736, 0, 0, 0, 0, 544, 736, 0, 0, 0, 0, 544, 512, 0, 0, 0, 0, 512, 512)
 }
 point_count = 7
 
+[sub_resource type="Curve2D" id="Curve2D_bgnc0"]
+
 [sub_resource type="Curve2D" id="Curve2D_cwd5o"]
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("camera_node", "player_node", "robot_node", "robot_path")]
 script = ExtResource("1_sj8bf")
-visual_debug_mode = false
 camera_node = NodePath("GameCamera")
 player_node = NodePath("Player")
 robot_node = NodePath("Levels/RobotPath/RobotPathFollowing/Robot")
@@ -53,6 +58,7 @@ collision_layer = 2
 collision_mask = 2
 
 [node name="Level01" type="Node2D" parent="Levels"]
+visible = false
 
 [node name="Level01TileMap" parent="Levels/Level01" instance=ExtResource("1_ep76x")]
 
@@ -69,6 +75,7 @@ stream = ExtResource("6_mvpqm")
 bus = &"Background Music"
 
 [node name="Level02" type="Node2D" parent="Levels"]
+visible = false
 
 [node name="Level02TileMap" parent="Levels/Level02" instance=ExtResource("5_3hhcn")]
 
@@ -85,14 +92,32 @@ curve = SubResource("Curve2D_a6y8m")
 stream = ExtResource("6_xe4m0")
 bus = &"Background Music"
 
+[node name="Level03" type="Node2D" parent="Levels"]
+visible = false
+
+[node name="Level03TileMap" parent="Levels/Level03" instance=ExtResource("7_xet8g")]
+
+[node name="Level03RobotPath" type="Path2D" parent="Levels/Level03"]
+curve = SubResource("Curve2D_uy180")
+
 [node name="Level04" type="Node2D" parent="Levels"]
+visible = false
 
 [node name="Level04TileMap" parent="Levels/Level04" instance=ExtResource("7_m1dw6")]
 
 [node name="Level04RobotPath" type="Path2D" parent="Levels/Level04"]
 curve = SubResource("Curve2D_auagk")
 
+[node name="Level05" type="Node2D" parent="Levels"]
+visible = false
+
+[node name="Level05TileMap" parent="Levels/Level05" instance=ExtResource("9_tdyas")]
+
+[node name="Level05RobotPath" type="Path2D" parent="Levels/Level05"]
+curve = SubResource("Curve2D_bgnc0")
+
 [node name="Credits" type="Node2D" parent="Levels"]
+visible = false
 
 [node name="CreditsBackgroundMusic" type="AudioStreamPlayer" parent="Levels/Credits"]
 stream = ExtResource("7_reh8n")
@@ -125,14 +150,17 @@ collision_mask = 3
 [node name="StartLevelScreen" parent="CanvasLayer" instance=ExtResource("7_6mv3e")]
 
 [node name="LevelSelectionMenu" parent="CanvasLayer" instance=ExtResource("12_47a0v")]
+visible = false
 
 [node name="HomeUI" parent="CanvasLayer" instance=ExtResource("11_18tj5")]
+visible = false
 
 [node name="HomeUIBackgroundMusic" type="AudioStreamPlayer" parent="CanvasLayer/HomeUI"]
 stream = ExtResource("12_nnq5x")
 bus = &"Background Music"
 
 [node name="SettingsMenu" parent="CanvasLayer" instance=ExtResource("13_u1d37")]
+visible = false
 
 [node name="EnterSettingsMenuSound" type="AudioStreamPlayer" parent="CanvasLayer/SettingsMenu"]
 stream = ExtResource("14_t7j0s")

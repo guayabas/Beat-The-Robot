@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dy0lr88p5unan"]
+
+[ext_resource type="Texture2D" uid="uid://2cei33kejoy0" path="res://assets/tiles/DALL·E 2024-08-21 11.16.27 - A set of five different 2D pixel art maze designs displayed on a grid. Each maze has a unique style and path layout___1. __Classic Zigzag Maze___ A tr.webp" id="1_wgtsn"]
+
+[node name="ReferenceMazes" type="Sprite2D"]
+visible = false
+modulate = Color(1, 1, 1, 0.196078)
+scale = Vector2(3.5, 3.5)
+texture = ExtResource("1_wgtsn")

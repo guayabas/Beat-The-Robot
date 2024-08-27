@@ -30,6 +30,9 @@ func is_ray_cast_colliding():
 	self.get_node("@RayCast2D@4").is_colliding() or \
 	self.get_node("@RayCast2D@5").is_colliding()
 
+func is_colliding(motion_to_test : Vector2):
+	return self.move_and_collide(motion_to_test, true) != null
+
 func set_initial_position(_position_to_set : Vector2):
 	pass
 

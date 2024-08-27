@@ -73,6 +73,7 @@ func cycle_menu_option(button_on_focus : ButtonOnFocus, cycle_direction : CycleM
 	move_up_down_menu.play()
 
 func _ready():
+
 	# NOTE : This is a way of disabling the default actions  provided
 	# by Godot, it might not be safe specially if used with the @tool
 	# annotation but for now leave it as it is

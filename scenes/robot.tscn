@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bdyneytr4rbrb" path="res://assets/sprites/RobotFace2.png" id="2_uwim7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_aayl6"]
-size = Vector2(64, 64)
+size = Vector2(60, 60)
 
 [node name="Robot" type="CharacterBody2D"]
 script = ExtResource("1_6guur")

@@ -102,6 +102,29 @@ func _physics_process(delta):
 	if level_has_started and update_function == 1:
 		if show_console_output:
 			print("_physics_process called every ", delta, " seconds")
+			
+			
+		#print(self.move_and_collide(Vector2.ZERO, true))
+		
+		#self.test_move()
+		
+		#var input_direction = Input.get_vector(
+			#"player_move_left", 
+			#"player_move_right", 
+			#"player_move_up", 
+			#"player_move_down",
+			#0.1
+			#)
+		##print(input_direction)
+		#var velocity = (input_direction * MOVEMENT_IN_PIXELS)
+		#var kinematic_collision = self.move_and_collide(velocity * delta,  true)
+		#if kinematic_collision:
+			#print(kinematic_collision.get_position())
+			#print(kinematic_collision.get_depth())
+		#
+		#if !kinematic_collision:
+			#self.position += (velocity * delta)
+			
 		player_movement(delta)
 	pass
 	
