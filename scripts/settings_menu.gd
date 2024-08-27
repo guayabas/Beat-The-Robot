@@ -1,6 +1,7 @@
 extends ColorRect
 
 class_name BeatTheRobotSettingsMenu
+
 @export var background_music_slider : Slider
 @export var sound_effects_slider : Slider
 @export var fullscreen_checkbox : CheckBox

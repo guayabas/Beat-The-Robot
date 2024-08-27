@@ -16,12 +16,18 @@ var current_movement_direction : MovementDirection
 @onready var ray_cast_2d_up_right = $RayCast2DUpRight
 @onready var ray_cast_2d_up_left = $RayCast2DUpLeft
 
+enum BoundaryCondition { RIGID, LOOP }
+
 @export_group("Movement Characteristics")
 @export var ray_cast_size : float = 32
 @export var MOVEMENT_IN_PIXELS = 32
 @export var SPEED_DELAY_FACTOR = 5
 @export var show_console_output : bool = false
 @export_enum("_process", "_physics_process") var update_function : int = 1
+@export var use_viewport_dimensions_for_world_size : bool = false
+@export var boundary_condition : BoundaryCondition = BoundaryCondition.RIGID
+@export_subgroup("Boundary Distance")
+@export var boundary_distance : int = 32
 const disable_usage_of_personalized_inputs : bool = true
 
 var viewport_dimensions : Vector2 = Vector2.ZERO
@@ -37,29 +43,45 @@ func move_left():
 	current_movement_direction = MovementDirection.LEFT
 	if !ray_cast_2d_left.is_colliding():
 		self.position.x -= (MOVEMENT_IN_PIXELS)
-		if self.position.x < 0.0:
-			self.position.x = viewport_dimensions.x
+		if boundary_condition == BoundaryCondition.RIGID:
+			if self.position.x < boundary_distance:
+				self.position.x = boundary_distance
+		elif boundary_condition == BoundaryCondition.LOOP:
+			if self.position.x < 0.0:
+				self.position.x = viewport_dimensions.x
 
 func move_right():
 	current_movement_direction = MovementDirection.RIGHT
 	if !ray_cast_2d_right.is_colliding():
 		self.position.x += (MOVEMENT_IN_PIXELS)
-		if self.position.x > viewport_dimensions.x:
-			self.position.x = 0.0
+		if boundary_condition == BoundaryCondition.RIGID:
+			if self.position.x > viewport_dimensions.x - boundary_distance:
+				self.position.x = viewport_dimensions.x - boundary_distance
+		elif boundary_condition == BoundaryCondition.LOOP:
+			if self.position.x > viewport_dimensions.x:
+				self.position.x = 0.0
 
 func move_up():
 	current_movement_direction = MovementDirection.UP
 	if !ray_cast_2d_up.is_colliding():
 		self.position.y -= (MOVEMENT_IN_PIXELS)
-		if self.position.y < 0.0:
-			self.position.y = viewport_dimensions.y
+		if boundary_condition == BoundaryCondition.RIGID:
+			if self.position.y < boundary_distance:
+				self.position.y = boundary_distance
+		elif boundary_condition == BoundaryCondition.LOOP:
+			if self.position.y < 0.0:
+				self.position.y = viewport_dimensions.y
 
 func move_down():
 	current_movement_direction = MovementDirection.DOWN
 	if !ray_cast_2d_down.is_colliding():
 		self.position.y += (MOVEMENT_IN_PIXELS)
-		if self.position.y > viewport_dimensions.y:
-			self.position.y = 0.0
+		if boundary_condition == BoundaryCondition.RIGID:
+			if self.position.y > viewport_dimensions.y - boundary_distance:
+				self.position.y = viewport_dimensions.y - boundary_distance
+		elif boundary_condition == BoundaryCondition.LOOP:
+			if self.position.y > viewport_dimensions.y:
+				self.position.y = 0.0
 
 func player_movement(delta:float):
 	if !is_menu_settings_being_displayed:
@@ -90,8 +112,10 @@ func _process(delta):
 	ray_cast_2d_right.target_position = Vector2(+ray_cast_size, 0)
 	ray_cast_2d_left.target_position = Vector2(-ray_cast_size, 0)
 	ray_cast_2d_up.target_position = Vector2(0, -ray_cast_size)
-	#viewport_dimensions = get_viewport_rect().size
-	viewport_dimensions = Vector2(1024, 1024)
+	if use_viewport_dimensions_for_world_size:
+		viewport_dimensions = get_viewport_rect().size
+	else:
+		viewport_dimensions = Vector2(1024, 1024)
 	if level_has_started and update_function == 0:
 		if show_console_output:
 			print("_process called every ", delta, " seconds")
@@ -102,29 +126,6 @@ func _physics_process(delta):
 	if level_has_started and update_function == 1:
 		if show_console_output:
 			print("_physics_process called every ", delta, " seconds")
-			
-			
-		#print(self.move_and_collide(Vector2.ZERO, true))
-		
-		#self.test_move()
-		
-		#var input_direction = Input.get_vector(
-			#"player_move_left", 
-			#"player_move_right", 
-			#"player_move_up", 
-			#"player_move_down",
-			#0.1
-			#)
-		##print(input_direction)
-		#var velocity = (input_direction * MOVEMENT_IN_PIXELS)
-		#var kinematic_collision = self.move_and_collide(velocity * delta,  true)
-		#if kinematic_collision:
-			#print(kinematic_collision.get_position())
-			#print(kinematic_collision.get_depth())
-		#
-		#if !kinematic_collision:
-			#self.position += (velocity * delta)
-			
 		player_movement(delta)
 	pass
 	

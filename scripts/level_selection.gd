@@ -46,14 +46,18 @@ func grab_focus_on_first_element():
 	level_selection_container_button_1.texture_button.grab_focus()
 
 func _ready():
+	# NOTE : Sorry for the confusion of having some button numbers not consistent with the ID
+	# assigned (for example level_selection_container_button_2 with ID 4). This is because the
+	# layout created initially was for row alignment but for experience is better to have the levels
+	# organized in a column-fashion way
 	set_level_container_info(level_selection_container_button_1, 1, on_mouse_button_down_button_1)
-	set_level_container_info(level_selection_container_button_2, 2, on_mouse_button_down_button_2)
-	set_level_container_info(level_selection_container_button_3, 3, on_mouse_button_down_button_3)
-	set_level_container_info(level_selection_container_button_4, 4, on_mouse_button_down_button_4)
+	set_level_container_info(level_selection_container_button_2, 4, on_mouse_button_down_button_2)
+	set_level_container_info(level_selection_container_button_3, 7, on_mouse_button_down_button_3)
+	set_level_container_info(level_selection_container_button_4, 2, on_mouse_button_down_button_4)
 	set_level_container_info(level_selection_container_button_5, 5, on_mouse_button_down_button_5)
-	set_level_container_info(level_selection_container_button_6, 6, on_mouse_button_down_button_6)
-	set_level_container_info(level_selection_container_button_7, 7, on_mouse_button_down_button_7)
-	set_level_container_info(level_selection_container_button_8, 8, on_mouse_button_down_button_8)
+	set_level_container_info(level_selection_container_button_6, 8, on_mouse_button_down_button_6)
+	set_level_container_info(level_selection_container_button_7, 3, on_mouse_button_down_button_7)
+	set_level_container_info(level_selection_container_button_8, 6, on_mouse_button_down_button_8)
 	set_level_container_info(level_selection_container_button_9, 9, on_mouse_button_down_button_9)
 	grab_focus_on_first_element()
 

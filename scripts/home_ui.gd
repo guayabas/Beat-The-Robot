@@ -91,7 +91,7 @@ func _ready():
 
 func _process(_delta):
 	pass
-	
+
 func _unhandled_key_input(event):
 	if !player_is_playing_a_level and !is_menu_settings_being_displayed:
 		if event is InputEventKey:

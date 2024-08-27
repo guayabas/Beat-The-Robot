@@ -16,7 +16,8 @@ var last_window_mode_state : DisplayServer.WindowMode
 			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 @export var enable_dynamic_drawing : bool = false
 @export var hide_mouse_cursor : bool = false
-@export var godot_visual_debug_mode : bool = true
+@export var godot_visual_debug_mode : bool = false
+@export var enable_developer_mode_bindings : bool = false
 @export var show_world_grid : bool = true
 
 @export_subgroup("Grid Properties")
@@ -65,6 +66,9 @@ var current_scene_background_music : AudioStreamPlayer
 
 @onready var level_01_background_music = $Levels/Level01/Level01BackgroundMusic
 @onready var level_02_background_music = $Levels/Level02/Level02BackgroundMusic
+@onready var level_03_background_music = $Levels/Level03/Level03BackgroundMusic
+@onready var level_04_background_music = $Levels/Level04/Level04BackgroundMusic
+@onready var level_05_background_music = $Levels/Level05/Level05BackgroundMusic
 @onready var credits_background_music = $Levels/Credits/CreditsBackgroundMusic
 @onready var home_ui_background_music = $CanvasLayer/HomeUI/HomeUIBackgroundMusic
 @onready var enter_settings_menu_sound = $CanvasLayer/SettingsMenu/EnterSettingsMenuSound
@@ -86,6 +90,9 @@ var current_scene_background_music : AudioStreamPlayer
 @onready var settings_menu = $CanvasLayer/SettingsMenu
 @onready var level_selection_menu = $CanvasLayer/LevelSelectionMenu
 @onready var start_level_screen = $CanvasLayer/StartLevelScreen
+
+var frequency_color : float = 0.0
+var sign_direction : int = 1
 
 func do_camera_adjustment(camera_mode_to_use : CameraMode) -> void:
 	if initial_viewport_stretch_mode == "disabled":
@@ -115,7 +122,6 @@ func do_camera_adjustment(camera_mode_to_use : CameraMode) -> void:
 			CameraMode.FREE, _:
 				pass
 
-
 func toggle_fullscreen() -> void:
 	# TODO : There is a bug when the window goes from maximized
 	# to fullscreen and then back to maximized to then moved within the
@@ -144,6 +150,7 @@ func disable_all_levels():
 func enable_level(robot_path_to_enable : Path2D, tile_map_to_enable : TileMap):
 	robot_path_to_enable.visible = true
 	tile_map_to_enable.set_layer_enabled(0, true)
+	tile_map_to_enable.visible = true
 
 func is_scene_home_scene_or_level_selection(scene : Scenes):
 	if scene == Scenes.HOME or scene == Scenes.LEVELSELECTION:
@@ -167,6 +174,12 @@ func reset_scene(scene : Scenes):
 	inform_player_level_has_finished.emit()
 	level_has_started = false
 	is_scene_home_scene_or_level_selection(scene)
+	
+	# NOTE : This has to be done for now for the special case of the credits
+	# that I do not want for the player to intersect with the robot bounding box
+	# since it is by default this value (see the case Scenes.CREDITS)
+	robot_node.geometry_collision_shape_2d.shape.size = Vector2(60, 60)
+	
 	match scene:
 		Scenes.HOME, Scenes.LEVELSELECTION:
 			player_node.set_position(Vector2.ZERO)
@@ -194,7 +207,18 @@ func reset_scene(scene : Scenes):
 			start_delay_timer_out = false
 			robot_path_following.progress = 0
 		Scenes.LEVEL03:
-			pass
+			player_node.set_position(Vector2(32, 32))
+			start_level_screen.update_level_label("Level : 03")
+			var simple_curve = Curve2D.new()
+			simple_curve.add_point(Vector2(1024 - 32, 1024 - 32))
+			simple_curve.add_point(Vector2(1024 - 32, 1024 - 31))
+			robot_path.curve = level_03_robot_path.curve
+			goal_area.set_position(robot_path.curve.get_point_position(robot_path.curve.point_count - 1))
+			disable_all_levels()
+			enable_level(level_03_robot_path, level_03_tile_map)
+			start_level_screen.visible = true
+			start_delay_timer_out = false
+			robot_path_following.progress = 0
 		Scenes.LEVEL04:
 			player_node.set_position(Vector2(96, 96))
 			start_level_screen.update_level_label("Level : 04")
@@ -206,18 +230,27 @@ func reset_scene(scene : Scenes):
 			start_delay_timer_out = false
 			robot_path_following.progress = 0
 		Scenes.LEVEL05:
-			pass
+			player_node.set_position(Vector2(32, 32))
+			start_level_screen.update_level_label("Level : 05")
+			robot_path.curve = level_05_robot_path.curve
+			goal_area.set_position(robot_path.curve.get_point_position(robot_path.curve.point_count - 1))
+			disable_all_levels()
+			enable_level(level_05_robot_path, level_05_tile_map)
+			start_level_screen.visible = true
+			start_delay_timer_out = false
+			robot_path_following.progress = 0
 		Scenes.CREDITS:
 			goal_area.set_position(Vector2(512, 512))
 			player_node.set_position(Vector2(512 - 128, 512))
 			var simple_curve = Curve2D.new()
-			simple_curve.add_point(Vector2(512 + 128, 512 - 8))
-			simple_curve.add_point(Vector2(512 + 128, 512 + 8))
+			simple_curve.add_point(Vector2(512 + 128, 512 - 64))
+			simple_curve.add_point(Vector2(512 + 128, 512 + 64))
 			robot_path.curve = simple_curve
 			disable_all_levels()
 			start_level_screen.visible = false
 			start_delay_timer_out = true
 			robot_path_following.progress_ratio = 0.5
+			robot_node.geometry_collision_shape_2d.shape.size = Vector2(64, 64)
 		_:
 			pass
 
@@ -236,65 +269,66 @@ func start_level():
 		inform_player_level_has_started.emit()
 		start_delay_timer.start()
 
-func next_scene(scene : Scenes):
-	stop_music_node_safely()
+func select_music_level_data(scene : Scenes):
+	current_scene_background_music = null
 	match scene:
 		Scenes.HOME:
-			current_scene_background_music = null
-			return Scenes.LEVELSELECTION
-		Scenes.LEVELSELECTION:
-			current_scene_background_music = level_01_background_music
-			return Scenes.CREDITS
+			current_scene_background_music = home_ui_background_music
 		Scenes.LEVEL01:
-			current_scene_background_music = level_02_background_music
-			return Scenes.LEVEL02
+			current_scene_background_music = level_01_background_music
 		Scenes.LEVEL02:
-			current_scene_background_music = null
-			return Scenes.LEVEL03
+			current_scene_background_music = level_02_background_music
 		Scenes.LEVEL03:
-			current_scene_background_music = null
-			return Scenes.LEVEL04
+			current_scene_background_music = level_03_background_music
 		Scenes.LEVEL04:
-			current_scene_background_music = null
-			return Scenes.LEVEL05
+			current_scene_background_music = level_04_background_music
 		Scenes.LEVEL05:
+			current_scene_background_music = level_05_background_music
+		Scenes.CREDITS:
 			current_scene_background_music = credits_background_music
-			return Scenes.CREDITS
+
+func next_scene(scene : Scenes):
+	stop_music_node_safely()
+	var scene_to_return : Scenes
+	match scene:
+		Scenes.HOME:
+			scene_to_return = Scenes.LEVELSELECTION
+		Scenes.LEVELSELECTION:
+			scene_to_return = Scenes.CREDITS
+		Scenes.LEVEL01:
+			scene_to_return = Scenes.LEVEL02
+		Scenes.LEVEL02:
+			scene_to_return = Scenes.LEVEL03
+		Scenes.LEVEL03:
+			scene_to_return = Scenes.LEVEL04
+		Scenes.LEVEL04:
+			scene_to_return = Scenes.LEVEL05
+		Scenes.LEVEL05:
+			scene_to_return = Scenes.CREDITS
+	select_music_level_data(scene_to_return)
+	return scene_to_return
 
 func cycle_scenes():
+	home_ui.player_is_playing_a_level = true
 	if current_scene == Scenes.HOME:
-		current_scene_background_music = null
 		current_scene = Scenes.LEVELSELECTION
-		home_ui.player_is_playing_a_level = true
 	elif current_scene == Scenes.LEVELSELECTION:
-		current_scene_background_music = level_01_background_music
 		current_scene = Scenes.LEVEL01
-		home_ui.player_is_playing_a_level = true
 	elif current_scene == Scenes.LEVEL01:
-		current_scene_background_music = level_02_background_music
 		current_scene = Scenes.LEVEL02
-		home_ui.player_is_playing_a_level = true
 	elif current_scene == Scenes.LEVEL02:
-		current_scene_background_music = null
 		current_scene = Scenes.LEVEL03
-		home_ui.player_is_playing_a_level = true
 	elif current_scene == Scenes.LEVEL03:
-		current_scene_background_music = null
 		current_scene = Scenes.LEVEL04
-		home_ui.player_is_playing_a_level = true
 	elif current_scene == Scenes.LEVEL04:
-		current_scene_background_music = null
 		current_scene = Scenes.LEVEL05
-		home_ui.player_is_playing_a_level = true
 	elif current_scene == Scenes.LEVEL05:
-		current_scene_background_music = credits_background_music
 		current_scene = Scenes.CREDITS
-		home_ui.player_is_playing_a_level = true
 	elif current_scene == Scenes.CREDITS:
-		current_scene_background_music = home_ui_background_music
 		current_scene = Scenes.HOME
 		home_ui.player_is_playing_a_level = false
 		home_ui.start_focus_on_start_button()
+	select_music_level_data(current_scene)
 
 func _init():
 	# NOTE : Hack to bring the window to foreground in the OS when the game
@@ -329,16 +363,27 @@ func _ready():
 	pass
 
 func _process(delta):
+	var color_component = 0.65 + (0.1 * sin(frequency_color))
+	var color_background_dynamic = Color.DARK_GRAY * color_component
+	frequency_color += (sign_direction * delta)
+	if frequency_color > PI:
+		sign_direction = -1
+	if frequency_color < 0.0:
+		sign_direction = +1
+	RenderingServer.set_default_clear_color(color_background_dynamic)
 	if level_has_started \
 	and start_delay_timer_out \
 	and current_scene != Scenes.CREDITS \
+	and current_scene != Scenes.HOME \
+	and current_scene != Scenes.LEVELSELECTION \
 	and !robot_node.is_ray_cast_colliding() \
 	and !robot_node.is_menu_settings_being_displayed:
+		var robot_speed = (64 * 4 * delta)
 		var p1 = robot_path.curve.sample_baked(robot_path_following.progress)
-		var p2 = robot_path.curve.sample_baked(robot_path_following.progress + (64 * 4 * delta))
+		var p2 = robot_path.curve.sample_baked(robot_path_following.progress + robot_speed)
 		var motion = (p2 - p1)
 		if !robot_node.is_colliding(motion):
-			robot_path_following.progress += ((64 * 4) * delta)
+			robot_path_following.progress += robot_speed
 	if enable_dynamic_drawing:
 		self.queue_redraw()
 	if enable_dynamic_camera_adjustment:
@@ -368,26 +413,42 @@ func _unhandled_key_input(event):
 			if event.pressed and !event.echo:
 				match event.keycode:
 					Key.KEY_R:
-						reset_scene(current_scene)
+						if enable_developer_mode_bindings:
+							reset_scene(current_scene)
 					Key.KEY_I:
-						robot_path_following.progress_ratio = 0.0
-					Key.KEY_D:
-						if !enable_dynamic_drawing:
-							self.queue_redraw()
+						if enable_developer_mode_bindings:
+							robot_path_following.progress_ratio = 0.0
+					Key.KEY_0:
+						if enable_developer_mode_bindings:
+							if !enable_dynamic_drawing:
+								self.queue_redraw()
 					Key.KEY_P:
-						camera_node.position = Vector2.ZERO
-						camera_node.zoom = Vector2.ONE
+						if enable_developer_mode_bindings:
+							camera_node.position = Vector2.ZERO
+							camera_node.zoom = Vector2.ONE
 					Key.KEY_Q:
-						get_tree().quit()
-					KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN:
+						if enable_developer_mode_bindings:
+							get_tree().quit()
+					Key.KEY_LEFT,  \
+					Key.KEY_RIGHT, \
+					Key.KEY_UP,    \
+					Key.KEY_DOWN,  \
+					Key.KEY_A,     \
+					Key.KEY_W,     \
+					Key.KEY_S,     \
+					Key.KEY_D:
 						start_level()
-					KEY_ESCAPE:
+					Key.KEY_ESCAPE:
 						pass
+					Key.KEY_ENTER:
+						if enable_developer_mode_bindings:
+							start_level()
 					KEY_1:
-						stop_music_node_safely()
-						cycle_scenes()
-						reset_scene(current_scene)
-						play_music_node_safely()
+						if enable_developer_mode_bindings:
+							stop_music_node_safely()
+							cycle_scenes()
+							reset_scene(current_scene)
+							play_music_node_safely()
 
 func _unhandled_input(event):
 	if event is InputEventJoypadMotion:
@@ -417,11 +478,11 @@ func _unhandled_input(event):
 func _on_area_2d_body_entered(body):
 	if current_scene != Scenes.CREDITS:
 		if body.name == "Player":
-			print("you won at level : ", current_scene)
+			print("you won at level : ", current_scene - 1)
 			current_scene = next_scene(current_scene)
 			play_music_node_safely()
 		elif body.name == "Robot":
-			print("you lost at level : ", current_scene)
+			print("you lost at level : ", current_scene - 1)
 		reset_scene(current_scene)
 	pass
 
@@ -477,6 +538,7 @@ func _on_level_selection_menu_inform_game_that_level_has_been_selected_from_ui(s
 		print("Scene ", selected_level_id, " not build yet ...")
 		current_scene = Scenes.HOME
 
+	select_music_level_data(current_scene)
 	reset_scene(current_scene)
 	play_music_node_safely()
 
@@ -490,7 +552,7 @@ func draw_grid(use_viewport_size : bool = false):
 	else:
 		viewport_dimensions = Vector2(1024, 1024)
 	var pixel_grid_size = (viewport_dimensions / grid_size)
-	var custom_gray = Color.GRAY
+	var custom_gray = Color.LIGHT_GRAY
 	custom_gray.a = 0.3
 	for i in range(0, pixel_grid_size.x):
 		for j in range(0, pixel_grid_size.y):

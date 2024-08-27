@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://rtwap0tlb660"]
+[gd_scene load_steps=29 format=3 uid="uid://rtwap0tlb660"]
 
 [ext_resource type="PackedScene" uid="uid://gdxrcfwyvtq1" path="res://scenes/level_01_tilemap.tscn" id="1_ep76x"]
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_sj8bf"]
@@ -6,19 +6,22 @@
 [ext_resource type="PackedScene" uid="uid://mmth50xyuquq" path="res://scenes/goal_area.tscn" id="3_a4h41"]
 [ext_resource type="PackedScene" uid="uid://cm6c3tqde6i2s" path="res://scenes/level_02_tilemap.tscn" id="5_3hhcn"]
 [ext_resource type="PackedScene" uid="uid://d5ft42oeto0o" path="res://scenes/robot.tscn" id="5_4xci4"]
-[ext_resource type="AudioStream" uid="uid://k351amcawjq" path="res://assets/audio/Stream Loops 2024-03-20_02.ogg" id="6_mvpqm"]
-[ext_resource type="AudioStream" uid="uid://yqe4brbelaxt" path="res://assets/audio/Stream Loops 2024-02-21_02.ogg" id="6_xe4m0"]
+[ext_resource type="AudioStream" uid="uid://k351amcawjq" path="res://assets/audio/Level01.ogg" id="6_mvpqm"]
+[ext_resource type="AudioStream" uid="uid://yqe4brbelaxt" path="res://assets/audio/Level02.ogg" id="6_xe4m0"]
 [ext_resource type="PackedScene" uid="uid://bmo04yg3u7pha" path="res://scenes/start_level_screen.tscn" id="7_6mv3e"]
 [ext_resource type="PackedScene" uid="uid://bq4ft788uuesj" path="res://scenes/level_04_tilemap.tscn" id="7_m1dw6"]
-[ext_resource type="AudioStream" uid="uid://ltwja2c1hhks" path="res://assets/audio/Stream Loops 2024-02-21_01.ogg" id="7_reh8n"]
+[ext_resource type="AudioStream" uid="uid://ltwja2c1hhks" path="res://assets/audio/Credits.ogg" id="7_reh8n"]
 [ext_resource type="PackedScene" uid="uid://dufil6qb73sj1" path="res://scenes/level_03_tilemap.tscn" id="7_xet8g"]
+[ext_resource type="AudioStream" uid="uid://ewa80xe82tv" path="res://assets/audio/Level03.ogg" id="8_8rlk8"]
 [ext_resource type="PackedScene" uid="uid://c8rybhuu35jwx" path="res://scenes/level_05_tilemap.tscn" id="9_tdyas"]
+[ext_resource type="AudioStream" uid="uid://bhc4yff4afa08" path="res://assets/audio/Level04.ogg" id="10_crh64"]
 [ext_resource type="PackedScene" uid="uid://if7yybfb42dl" path="res://scenes/home_ui.tscn" id="11_18tj5"]
 [ext_resource type="PackedScene" uid="uid://4o8gmcvn6qvs" path="res://scenes/level_selection.tscn" id="12_47a0v"]
-[ext_resource type="AudioStream" uid="uid://cvx0hvox5qxpj" path="res://assets/audio/Stream Loops 2024-02-14_L01.ogg" id="12_nnq5x"]
+[ext_resource type="AudioStream" uid="uid://bn6pnndfso7fq" path="res://assets/audio/Level05.ogg" id="12_hvbl3"]
+[ext_resource type="AudioStream" uid="uid://cvx0hvox5qxpj" path="res://assets/audio/HomeUI.ogg" id="12_nnq5x"]
 [ext_resource type="PackedScene" uid="uid://bvubimhmlqj42" path="res://scenes/settings_menu.tscn" id="13_u1d37"]
-[ext_resource type="AudioStream" uid="uid://cjgsxeyxk8tfo" path="res://assets/audio/sounds/JDSherbert - Ultimate UI SFX Pack - Popup Open - 1.ogg" id="14_t7j0s"]
-[ext_resource type="AudioStream" uid="uid://3x4fipdsu7j6" path="res://assets/audio/sounds/JDSherbert - Ultimate UI SFX Pack - Popup Close - 1.ogg" id="15_fvo5d"]
+[ext_resource type="AudioStream" uid="uid://cjgsxeyxk8tfo" path="res://assets/audio/sounds/EnterMenu.ogg" id="14_t7j0s"]
+[ext_resource type="AudioStream" uid="uid://3x4fipdsu7j6" path="res://assets/audio/sounds/ExitMenu.ogg" id="15_fvo5d"]
 
 [sub_resource type="Curve2D" id="Curve2D_0hblo"]
 _data = {
@@ -33,6 +36,10 @@ _data = {
 point_count = 4
 
 [sub_resource type="Curve2D" id="Curve2D_uy180"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 992, 992, 0, 0, 0, 0, 992, 480, 0, 0, 0, 0, 832, 480, 0, 0, 0, 0, 832, 320, 0, 0, 0, 0, 704, 320, 0, 0, 0, 0, 704, 512, 0, 0, 0, 0, 512, 512)
+}
+point_count = 7
 
 [sub_resource type="Curve2D" id="Curve2D_auagk"]
 _data = {
@@ -41,6 +48,10 @@ _data = {
 point_count = 7
 
 [sub_resource type="Curve2D" id="Curve2D_bgnc0"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 992, 992, 0, 0, 0, 0, 576, 992, 0, 0, 0, 0, 576, 832, 0, 0, 0, 0, 704, 832, 0, 0, 0, 0, 704, 512, 0, 0, 0, 0, 512, 512)
+}
+point_count = 6
 
 [sub_resource type="Curve2D" id="Curve2D_cwd5o"]
 
@@ -58,9 +69,9 @@ collision_layer = 2
 collision_mask = 2
 
 [node name="Level01" type="Node2D" parent="Levels"]
-visible = false
 
 [node name="Level01TileMap" parent="Levels/Level01" instance=ExtResource("1_ep76x")]
+visible = false
 
 [node name="PlayerMarker2D" type="Marker2D" parent="Levels/Level01/Level01TileMap"]
 position = Vector2(96, 160)
@@ -68,6 +79,7 @@ position = Vector2(96, 160)
 [node name="RobotMarker2D" type="Marker2D" parent="Levels/Level01/Level01TileMap"]
 
 [node name="Level01RobotPath" type="Path2D" parent="Levels/Level01"]
+visible = false
 curve = SubResource("Curve2D_0hblo")
 
 [node name="Level01BackgroundMusic" type="AudioStreamPlayer" parent="Levels/Level01"]
@@ -75,9 +87,9 @@ stream = ExtResource("6_mvpqm")
 bus = &"Background Music"
 
 [node name="Level02" type="Node2D" parent="Levels"]
-visible = false
 
 [node name="Level02TileMap" parent="Levels/Level02" instance=ExtResource("5_3hhcn")]
+visible = false
 
 [node name="PlayerMarker2D" type="Marker2D" parent="Levels/Level02/Level02TileMap"]
 position = Vector2(96, 96)
@@ -86,6 +98,7 @@ position = Vector2(96, 96)
 position = Vector2(928, 928)
 
 [node name="Level02RobotPath" type="Path2D" parent="Levels/Level02"]
+visible = false
 curve = SubResource("Curve2D_a6y8m")
 
 [node name="Level02BackgroundMusic" type="AudioStreamPlayer" parent="Levels/Level02"]
@@ -93,28 +106,41 @@ stream = ExtResource("6_xe4m0")
 bus = &"Background Music"
 
 [node name="Level03" type="Node2D" parent="Levels"]
-visible = false
 
 [node name="Level03TileMap" parent="Levels/Level03" instance=ExtResource("7_xet8g")]
+visible = false
 
 [node name="Level03RobotPath" type="Path2D" parent="Levels/Level03"]
+visible = false
 curve = SubResource("Curve2D_uy180")
 
+[node name="Level03BackgroundMusic" type="AudioStreamPlayer" parent="Levels/Level03"]
+stream = ExtResource("8_8rlk8")
+bus = &"Background Music"
+
 [node name="Level04" type="Node2D" parent="Levels"]
-visible = false
 
 [node name="Level04TileMap" parent="Levels/Level04" instance=ExtResource("7_m1dw6")]
+visible = false
 
 [node name="Level04RobotPath" type="Path2D" parent="Levels/Level04"]
+visible = false
 curve = SubResource("Curve2D_auagk")
 
+[node name="Level04BackgroundMusic" type="AudioStreamPlayer" parent="Levels/Level04"]
+stream = ExtResource("10_crh64")
+bus = &"Background Music"
+
 [node name="Level05" type="Node2D" parent="Levels"]
-visible = false
 
 [node name="Level05TileMap" parent="Levels/Level05" instance=ExtResource("9_tdyas")]
 
 [node name="Level05RobotPath" type="Path2D" parent="Levels/Level05"]
 curve = SubResource("Curve2D_bgnc0")
+
+[node name="Level05BackgroundMusic" type="AudioStreamPlayer" parent="Levels/Level05"]
+stream = ExtResource("12_hvbl3")
+bus = &"Background Music"
 
 [node name="Credits" type="Node2D" parent="Levels"]
 visible = false
@@ -131,6 +157,7 @@ rotates = false
 loop = false
 
 [node name="Robot" parent="Levels/RobotPath/RobotPathFollowing" instance=ExtResource("5_4xci4")]
+visible = false
 collision_layer = 3
 collision_mask = 3
 

@@ -1,11 +1,13 @@
-[gd_scene load_steps=9 format=3 uid="uid://if7yybfb42dl"]
+[gd_scene load_steps=10 format=3 uid="uid://if7yybfb42dl"]
 
 [ext_resource type="Script" path="res://scripts/home_ui.gd" id="1_t48ok"]
 [ext_resource type="Texture2D" uid="uid://bdyneytr4rbrb" path="res://assets/sprites/RobotFace2.png" id="2_psd1h"]
-[ext_resource type="AudioStream" uid="uid://daqe34vvux32i" path="res://assets/audio/sounds/JDSherbert - Ultimate UI SFX Pack - Cursor - 2.ogg" id="3_8fcbe"]
+[ext_resource type="AudioStream" uid="uid://daqe34vvux32i" path="res://assets/audio/sounds/MoveUpDownMenu.ogg" id="3_8fcbe"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp7wj"]
-bg_color = Color(0.206417, 0.310296, 1, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cdwi8"]
+bg_color = Color(0.416749, 0.628744, 0.770429, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5rnom"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vhxyg"]
 
@@ -41,11 +43,23 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="GameTitleLabel" type="Label" parent="VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_cdwi8")
+
+[node name="VBoxContainerTitle" type="VBoxContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/PanelContainer/VBoxContainerTitle"]
+layout_mode = 2
+theme_override_constants/separation = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_5rnom")
+
+[node name="GameTitleLabel" type="Label" parent="VBoxContainer/PanelContainer/VBoxContainerTitle"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
-theme_override_styles/normal = SubResource("StyleBoxFlat_hp7wj")
-text = "Beat The Robot"
+text = "BEAT THE ROBOT"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -76,7 +90,7 @@ size_flags_horizontal = 4
 custom_minimum_size = Vector2(512, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
-text = "Start Game"
+text = "START GAME"
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/VBoxContainer2/VBoxContainer3"]
 layout_mode = 2
@@ -86,7 +100,7 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_8phn5")
 [node name="SettingsButton" type="Button" parent="VBoxContainer/VBoxContainer2/VBoxContainer3"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
-text = "Settings"
+text = "SETTINGS"
 
 [node name="HSeparator2" type="HSeparator" parent="VBoxContainer/VBoxContainer2/VBoxContainer3"]
 layout_mode = 2
@@ -96,7 +110,7 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_bab1b")
 [node name="EndGameButton" type="Button" parent="VBoxContainer/VBoxContainer2/VBoxContainer3"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
-text = "Exit Game"
+text = "EXIT GAME"
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/VBoxContainer2"]
 layout_mode = 2
