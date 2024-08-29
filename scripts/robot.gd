@@ -24,11 +24,15 @@ func is_ray_cast_colliding():
 	# NOTE : This is one way of fetching the values from the editor
 	# but those are persistent so might not be so good hardcoding this
 	# value if something else changes for such scene ...
-	return \
-	self.get_node("@RayCast2D@2").is_colliding() or \
-	self.get_node("@RayCast2D@3").is_colliding() or \
-	self.get_node("@RayCast2D@4").is_colliding() or \
-	self.get_node("@RayCast2D@5").is_colliding()
+
+	# TODO : Fix the naming here, it seems it has changed as expected ...
+	#return \
+	#self.get_node("@RayCast2D@2").is_colliding() or \
+	#self.get_node("@RayCast2D@3").is_colliding() or \
+	#self.get_node("@RayCast2D@4").is_colliding() or \
+	#self.get_node("@RayCast2D@5").is_colliding()
+
+	return false
 
 func is_colliding(motion_to_test : Vector2):
 	return self.move_and_collide(motion_to_test, true) != null

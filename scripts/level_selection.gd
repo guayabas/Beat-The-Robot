@@ -1,5 +1,7 @@
 extends Control
 
+class_name BeatTheRobotLevelSelection
+
 signal inform_game_that_level_has_been_selected_from_ui(selected_level_id : int)
 
 @export var level_selection_container_button_1 : LevelSelectionContainerButton

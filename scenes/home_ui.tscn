@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://if7yybfb42dl"]
 
 [ext_resource type="Script" path="res://scripts/home_ui.gd" id="1_t48ok"]
-[ext_resource type="Texture2D" uid="uid://bdyneytr4rbrb" path="res://assets/sprites/RobotFace2.png" id="2_psd1h"]
+[ext_resource type="Texture2D" uid="uid://bbhr4hhkcg4t7" path="res://assets/sprites/RobotFace2.png" id="2_psd1h"]
 [ext_resource type="AudioStream" uid="uid://daqe34vvux32i" path="res://assets/audio/sounds/MoveUpDownMenu.ogg" id="3_8fcbe"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cdwi8"]
@@ -25,6 +25,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_t48ok")
+console_log_developer_mode = true
 start_game_button = NodePath("VBoxContainer/VBoxContainer2/VBoxContainer3/StartGameButton")
 settings_game_button = NodePath("VBoxContainer/VBoxContainer2/VBoxContainer3/SettingsButton")
 exit_game_button = NodePath("VBoxContainer/VBoxContainer2/VBoxContainer3/EndGameButton")
@@ -127,7 +128,9 @@ one_shot = true
 stream = ExtResource("3_8fcbe")
 bus = &"Sound Effects"
 
-[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="inform_game_that_settings_screen_are_displayed" from="." to="." method="_on_inform_game_that_settings_screen_are_displayed"]
+[connection signal="inform_game_that_user_has_exited_game" from="." to="." method="_on_inform_game_that_user_has_exited_game"]
+[connection signal="inform_game_that_user_has_started_game" from="." to="." method="_on_inform_game_that_user_has_started_game"]
 [connection signal="mouse_entered" from="VBoxContainer/VBoxContainer2/VBoxContainer3/StartGameButton" to="." method="_on_start_game_button_mouse_entered"]
 [connection signal="pressed" from="VBoxContainer/VBoxContainer2/VBoxContainer3/StartGameButton" to="." method="_on_start_game_button_pressed"]
 [connection signal="mouse_entered" from="VBoxContainer/VBoxContainer2/VBoxContainer3/SettingsButton" to="." method="_on_settings_button_mouse_entered"]

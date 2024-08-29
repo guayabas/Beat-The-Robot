@@ -18,6 +18,7 @@ var last_window_mode_state : DisplayServer.WindowMode
 @export var hide_mouse_cursor : bool = false
 @export var godot_visual_debug_mode : bool = false
 @export var enable_developer_mode_bindings : bool = false
+@export var use_script_outside_of_godot : bool = false
 @export var show_world_grid : bool = true
 
 @export_subgroup("Grid Properties")
@@ -186,6 +187,10 @@ func reset_scene(scene : Scenes):
 			goal_area.set_position(Vector2(1024, 1024))
 			disable_all_levels()
 			start_level_screen.visible = false
+			if scene == Scenes.HOME:
+				home_ui.start_focus_on_start_button()
+			elif scene == Scenes.LEVELSELECTION:
+				level_selection_menu.grab_focus_on_first_element()
 		Scenes.LEVEL01:
 			player_node.set_position(Vector2(96, 160))
 			start_level_screen.update_level_label("Level : 01")
@@ -330,20 +335,29 @@ func cycle_scenes():
 		home_ui.start_focus_on_start_button()
 	select_music_level_data(current_scene)
 
+func go_to_level_selection():
+	current_scene = Scenes.LEVELSELECTION
+	stop_music_node_safely()
+	reset_scene(current_scene)
+
 func _init():
-	# NOTE : Hack to bring the window to foreground in the OS when the game
-	# launches automatically in fullscreen mode. Maybe grab the current mode directly
-	# from the editor when doing the development?
-	if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
-		var script = "C:/Users/aleja/Desktop/BeatTheRobot/scripts/powershell_focus_game_window.ps1 "
-		var arguments = "-windowTitle 'Godot_v4.2.2-stable_mono_win64' -processId " + str(OS.get_process_id())
-		var command = (script + arguments)
-		print(command)
-		var output = []
-		OS.execute("powershell.exe", ["-Command", command], output, false, false)
 	pass
 
 func _ready():
+	# NOTE : Hack to bring the window to foreground in the OS when the game
+	# launches automatically in fullscreen mode. Maybe grab the current mode directly
+	# from the editor when doing the development?
+	if use_script_outside_of_godot:
+		if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
+			OS.get_system_dir(OS.SYSTEM_DIR_DESKTOP)
+			var sript_directory = OS.get_system_dir(OS.SYSTEM_DIR_DESKTOP) + "/Beat-The-Robot/scripts/"
+			var script_name = "powershell_focus_game_window.ps1"
+			var script_file = (sript_directory + script_name)
+			var arguments = " -windowTitle 'Godot_v4.2.2-stable_mono_win64' -processId " + str(OS.get_process_id())
+			var command = (script_file + arguments)
+			print(command)
+			var output = []
+			OS.execute("powershell.exe", ["-Command", command], output, false, false)
 	initial_viewport_width = ProjectSettings.get_setting("display/window/size/viewport_width")
 	initial_viewport_height = ProjectSettings.get_setting("display/window/size/viewport_height")
 	initial_viewport_stretch_mode = ProjectSettings.get_setting("display/window/stretch/mode")
@@ -360,6 +374,8 @@ func _ready():
 	settings_menu.background_music_slider.value = 0.5
 	settings_menu.sound_effects_slider.value = 0.5
 	do_camera_adjustment(camera_mode_in_use)
+	if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
+		settings_menu.fullscreen_checkbox.button_pressed = true
 	pass
 
 func _process(delta):
@@ -412,6 +428,8 @@ func _unhandled_key_input(event):
 		else:
 			if event.pressed and !event.echo:
 				match event.keycode:
+					Key.KEY_L:
+						go_to_level_selection()
 					Key.KEY_R:
 						if enable_developer_mode_bindings:
 							reset_scene(current_scene)
@@ -443,7 +461,7 @@ func _unhandled_key_input(event):
 					Key.KEY_ENTER:
 						if enable_developer_mode_bindings:
 							start_level()
-					KEY_1:
+					Key.KEY_1:
 						if enable_developer_mode_bindings:
 							stop_music_node_safely()
 							cycle_scenes()
@@ -459,15 +477,15 @@ func _unhandled_input(event):
 			match event.button_index:
 				JOY_BUTTON_DPAD_LEFT, JOY_BUTTON_DPAD_RIGHT, JOY_BUTTON_DPAD_DOWN, JOY_BUTTON_DPAD_UP:
 					start_level()
+				JOY_BUTTON_BACK:
+					go_to_level_selection()
 	elif event is InputEventMouseButton:
 		if initial_viewport_stretch_mode == "disabled" and camera_mode_in_use == CameraMode.FREE:
 			match event.button_index:
 				MOUSE_BUTTON_WHEEL_DOWN:
 					camera_node.zoom += Vector2(0.1, 0.1)
-					pass
 				MOUSE_BUTTON_WHEEL_UP:
 					camera_node.zoom -= Vector2(0.1, 0.1)
-					pass
 	elif event is InputEventMouseMotion:
 		if initial_viewport_stretch_mode == "disabled" and camera_mode_in_use == CameraMode.FREE:
 			match event.button_mask:
@@ -495,18 +513,21 @@ func _on_inform_player_level_has_finished():
 func _on_start_delay_timeout():
 	start_delay_timer_out = true
 
-func _on_home_ui_inform_game_that_user_has_started_game():
+func _on_home_ui_inform_game_that_user_has_started_game(event : InputEvent):
 	current_scene = next_scene(current_scene)
 	reset_scene(current_scene)
 	play_music_node_safely()
 	home_ui.player_is_playing_a_level = true
 
-func _on_home_ui_inform_game_that_settings_screen_are_displayed():
+func _on_home_ui_inform_game_that_settings_screen_are_displayed(event : InputEvent):
 	home_ui.visible = false
 	home_ui.is_menu_settings_being_displayed = true
 	enter_settings_menu_sound.play()
 	settings_menu.visible = true
 	settings_menu.return_button.grab_focus()
+
+func _on_home_ui_inform_game_that_user_has_exited_game(event : InputEvent):
+	get_tree().quit()
 
 func _on_settings_menu_inform_game_that_return_button_has_been_pressed(from_game_controller : bool):
 	if current_scene == Scenes.HOME:
@@ -517,6 +538,14 @@ func _on_settings_menu_inform_game_that_return_button_has_been_pressed(from_game
 			home_ui.visible = true
 			home_ui.is_menu_settings_being_displayed = false
 			home_ui.update_focus(home_ui.current_button_on_focus)
+	elif current_scene == Scenes.LEVELSELECTION:
+		settings_menu.visible = !settings_menu.visible
+		if settings_menu.visible:
+			enter_settings_menu_sound.play()
+			settings_menu.return_button.grab_focus()
+		else:
+			exit_settings_menu_sound.play()
+			level_selection_menu.grab_focus_on_first_element()
 	else:
 		player_node.is_menu_settings_being_displayed = !player_node.is_menu_settings_being_displayed
 		robot_node.is_menu_settings_being_displayed = !robot_node.is_menu_settings_being_displayed

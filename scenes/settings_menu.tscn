@@ -23,6 +23,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0)
 script = ExtResource("1_xuyxu")
+console_log_developer_mode = true
 background_music_slider = NodePath("VBoxContainer/PanelContainer/VBoxContainer/BackgroundMusicSlider")
 sound_effects_slider = NodePath("VBoxContainer/PanelContainer/VBoxContainer/SoundEffectsSlider")
 fullscreen_checkbox = NodePath("VBoxContainer/CenterContainer/FullscreenCheckbox")
@@ -109,8 +110,10 @@ theme = ExtResource("2_kao1u")
 theme_override_font_sizes/font_size = 32
 text = "FULLSCREEN"
 
+[connection signal="inform_game_that_return_button_has_been_pressed" from="." to="." method="_on_inform_game_that_return_button_has_been_pressed"]
 [connection signal="mouse_entered" from="VBoxContainer/ReturnButton" to="." method="_on_return_button_mouse_entered"]
 [connection signal="mouse_exited" from="VBoxContainer/ReturnButton" to="." method="_on_return_button_mouse_exited"]
+[connection signal="pressed" from="VBoxContainer/ReturnButton" to="." method="_on_return_button_pressed"]
 [connection signal="drag_ended" from="VBoxContainer/PanelContainer/VBoxContainer/BackgroundMusicSlider" to="." method="_on_background_music_slider_drag_ended"]
 [connection signal="drag_ended" from="VBoxContainer/PanelContainer/VBoxContainer/SoundEffectsSlider" to="." method="_on_sound_effects_slider_drag_ended"]
 [connection signal="mouse_entered" from="VBoxContainer/CenterContainer/FullscreenCheckbox" to="." method="_on_fullscreen_checkbox_mouse_entered"]

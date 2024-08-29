@@ -57,6 +57,8 @@ point_count = 6
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("camera_node", "player_node", "robot_node", "robot_path")]
 script = ExtResource("1_sj8bf")
+hide_mouse_cursor = true
+use_script_outside_of_godot = true
 camera_node = NodePath("GameCamera")
 player_node = NodePath("Player")
 robot_node = NodePath("Levels/RobotPath/RobotPathFollowing/Robot")
@@ -181,6 +183,7 @@ visible = false
 
 [node name="HomeUI" parent="CanvasLayer" instance=ExtResource("11_18tj5")]
 visible = false
+console_log_developer_mode = false
 
 [node name="HomeUIBackgroundMusic" type="AudioStreamPlayer" parent="CanvasLayer/HomeUI"]
 stream = ExtResource("12_nnq5x")
@@ -188,6 +191,7 @@ bus = &"Background Music"
 
 [node name="SettingsMenu" parent="CanvasLayer" instance=ExtResource("13_u1d37")]
 visible = false
+console_log_developer_mode = false
 
 [node name="EnterSettingsMenuSound" type="AudioStreamPlayer" parent="CanvasLayer/SettingsMenu"]
 stream = ExtResource("14_t7j0s")
@@ -203,5 +207,6 @@ bus = &"Sound Effects"
 [connection signal="timeout" from="Levels/StartDelayTimer" to="." method="_on_start_delay_timeout"]
 [connection signal="inform_game_that_level_has_been_selected_from_ui" from="CanvasLayer/LevelSelectionMenu" to="." method="_on_level_selection_menu_inform_game_that_level_has_been_selected_from_ui"]
 [connection signal="inform_game_that_settings_screen_are_displayed" from="CanvasLayer/HomeUI" to="." method="_on_home_ui_inform_game_that_settings_screen_are_displayed"]
+[connection signal="inform_game_that_user_has_exited_game" from="CanvasLayer/HomeUI" to="." method="_on_home_ui_inform_game_that_user_has_exited_game"]
 [connection signal="inform_game_that_user_has_started_game" from="CanvasLayer/HomeUI" to="." method="_on_home_ui_inform_game_that_user_has_started_game"]
 [connection signal="inform_game_that_return_button_has_been_pressed" from="CanvasLayer/SettingsMenu" to="." method="_on_settings_menu_inform_game_that_return_button_has_been_pressed"]
