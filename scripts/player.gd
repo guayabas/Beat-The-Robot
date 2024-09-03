@@ -119,6 +119,7 @@ func _process(delta):
 	if level_has_started and update_function == 0:
 		if show_console_output:
 			print("_process called every ", delta, " seconds")
+			print("position: ", self.position)
 		player_movement(delta)
 	pass
 
@@ -126,6 +127,7 @@ func _physics_process(delta):
 	if level_has_started and update_function == 1:
 		if show_console_output:
 			print("_physics_process called every ", delta, " seconds")
+			print("position: ", self.position)
 		player_movement(delta)
 	pass
 	

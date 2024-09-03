@@ -57,9 +57,7 @@ point_count = 6
 [sub_resource type="Curve2D" id="Curve2D_cwd5o"]
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("camera_node", "player_node", "robot_node", "robot_path")]
-position = Vector2(0, 1)
 script = ExtResource("1_sj8bf")
-hide_mouse_cursor = true
 use_script_outside_of_godot = true
 camera_node = NodePath("GameCamera")
 player_node = NodePath("Player")
