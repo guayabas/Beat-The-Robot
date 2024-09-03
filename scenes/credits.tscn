@@ -1,0 +1,83 @@
+[gd_scene load_steps=2 format=3 uid="uid://dyxauckkrpjsf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vijgu"]
+
+[node name="Credits" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.0980392)
+
+[node name="VBoxContainer1" type="VBoxContainer" parent="ColorRect"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -299.0
+offset_right = 299.0
+offset_bottom = 214.0
+grow_horizontal = 2
+
+[node name="HSeparator1" type="HSeparator" parent="ColorRect/VBoxContainer1"]
+layout_mode = 2
+theme_override_constants/separation = 8
+theme_override_styles/separator = SubResource("StyleBoxEmpty_vijgu")
+
+[node name="Label" type="Label" parent="ColorRect/VBoxContainer1"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "A game from RELATIVITY GAMES"
+horizontal_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="ColorRect/VBoxContainer1"]
+layout_mode = 2
+theme_override_constants/separation = 8
+theme_override_styles/separator = SubResource("StyleBoxEmpty_vijgu")
+
+[node name="Label2" type="Label" parent="ColorRect/VBoxContainer1"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Programming, Art & Design
+
+ALEJANDRO GUAYAQUIL
+"
+horizontal_alignment = 1
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="ColorRect"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -299.0
+offset_top = -92.0
+offset_right = 299.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Label3" type="Label" parent="ColorRect/VBoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Music
+https://tallbeard.itch.io/music-loop-bundle
+
+Sound Effects
+https://jdsherbert.itch.io/ultimate-ui-sfx-pack"
+horizontal_alignment = 1
+
+[node name="HSeparatorBottom" type="HSeparator" parent="ColorRect/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 8
+theme_override_styles/separator = SubResource("StyleBoxEmpty_vijgu")

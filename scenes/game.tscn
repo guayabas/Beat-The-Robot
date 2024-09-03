@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://rtwap0tlb660"]
+[gd_scene load_steps=30 format=3 uid="uid://rtwap0tlb660"]
 
 [ext_resource type="PackedScene" uid="uid://gdxrcfwyvtq1" path="res://scenes/level_01_tilemap.tscn" id="1_ep76x"]
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_sj8bf"]
@@ -22,6 +22,7 @@
 [ext_resource type="PackedScene" uid="uid://bvubimhmlqj42" path="res://scenes/settings_menu.tscn" id="13_u1d37"]
 [ext_resource type="AudioStream" uid="uid://cjgsxeyxk8tfo" path="res://assets/audio/sounds/EnterMenu.ogg" id="14_t7j0s"]
 [ext_resource type="AudioStream" uid="uid://3x4fipdsu7j6" path="res://assets/audio/sounds/ExitMenu.ogg" id="15_fvo5d"]
+[ext_resource type="PackedScene" uid="uid://dyxauckkrpjsf" path="res://scenes/credits.tscn" id="23_j4j8k"]
 
 [sub_resource type="Curve2D" id="Curve2D_0hblo"]
 _data = {
@@ -56,6 +57,7 @@ point_count = 6
 [sub_resource type="Curve2D" id="Curve2D_cwd5o"]
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("camera_node", "player_node", "robot_node", "robot_path")]
+position = Vector2(0, 1)
 script = ExtResource("1_sj8bf")
 hide_mouse_cursor = true
 use_script_outside_of_godot = true
@@ -136,8 +138,10 @@ bus = &"Background Music"
 [node name="Level05" type="Node2D" parent="Levels"]
 
 [node name="Level05TileMap" parent="Levels/Level05" instance=ExtResource("9_tdyas")]
+visible = false
 
 [node name="Level05RobotPath" type="Path2D" parent="Levels/Level05"]
+visible = false
 curve = SubResource("Curve2D_bgnc0")
 
 [node name="Level05BackgroundMusic" type="AudioStreamPlayer" parent="Levels/Level05"]
@@ -145,7 +149,6 @@ stream = ExtResource("12_hvbl3")
 bus = &"Background Music"
 
 [node name="Credits" type="Node2D" parent="Levels"]
-visible = false
 
 [node name="CreditsBackgroundMusic" type="AudioStreamPlayer" parent="Levels/Credits"]
 stream = ExtResource("7_reh8n")
@@ -177,6 +180,9 @@ collision_mask = 3
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="StartLevelScreen" parent="CanvasLayer" instance=ExtResource("7_6mv3e")]
+
+[node name="Credits" parent="CanvasLayer" instance=ExtResource("23_j4j8k")]
+visible = false
 
 [node name="LevelSelectionMenu" parent="CanvasLayer" instance=ExtResource("12_47a0v")]
 visible = false

@@ -14,6 +14,8 @@ class_name BeatTheRobotSettingsMenu
 
 signal inform_game_that_return_button_has_been_pressed(from_game_controller : bool)
 
+var icon_image_as_texture : CompressedTexture2D = preload("res://assets//sprites//RobotFace16x16.png")
+
 func console_log_elements_and_focus_in_linear_time():
 	var nodes = get_tree_string().split('\n')
 	print()
@@ -88,7 +90,12 @@ func _on_fullscreen_checkbox_toggled(toggled_on : bool):
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 		DisplayServer.window_set_size(window_dimensions)
 		DisplayServer.window_set_position(top_left_corner)
-		DisplayServer.window_set_title("")
+		# NOTE : This is a "hack" since it looks that godot has a bug when 
+		# a game/app starts in fullscreen mode and then we move to windowed mode.
+		# The icon will be removed (compared to just starting as windowed mode) and thus
+		# I am forcing to do the reloading of such data here
+		DisplayServer.set_icon(icon_image_as_texture.get_image())
+		DisplayServer.window_set_title("Beat The Robot")
 
 func _on_background_music_slider_drag_ended(_value_changed):
 	#background_music_slider.release_focus()

@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://if7yybfb42dl"]
+[gd_scene load_steps=11 format=3 uid="uid://if7yybfb42dl"]
 
 [ext_resource type="Script" path="res://scripts/home_ui.gd" id="1_t48ok"]
 [ext_resource type="Texture2D" uid="uid://bbhr4hhkcg4t7" path="res://assets/sprites/RobotFace2.png" id="2_psd1h"]
 [ext_resource type="AudioStream" uid="uid://daqe34vvux32i" path="res://assets/audio/sounds/MoveUpDownMenu.ogg" id="3_8fcbe"]
+[ext_resource type="Theme" uid="uid://d0jdmvxjlamip" path="res://assets/pixel_theme.tres" id="3_kfboe"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cdwi8"]
 bg_color = Color(0.416749, 0.628744, 0.770429, 1)
@@ -90,6 +91,7 @@ size_flags_horizontal = 4
 [node name="StartGameButton" type="Button" parent="VBoxContainer/VBoxContainer2/VBoxContainer3"]
 custom_minimum_size = Vector2(512, 0)
 layout_mode = 2
+theme = ExtResource("3_kfboe")
 theme_override_font_sizes/font_size = 48
 text = "START GAME"
 
@@ -100,6 +102,7 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_8phn5")
 
 [node name="SettingsButton" type="Button" parent="VBoxContainer/VBoxContainer2/VBoxContainer3"]
 layout_mode = 2
+theme = ExtResource("3_kfboe")
 theme_override_font_sizes/font_size = 48
 text = "SETTINGS"
 
@@ -110,6 +113,7 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_bab1b")
 
 [node name="EndGameButton" type="Button" parent="VBoxContainer/VBoxContainer2/VBoxContainer3"]
 layout_mode = 2
+theme = ExtResource("3_kfboe")
 theme_override_font_sizes/font_size = 48
 text = "EXIT GAME"
 

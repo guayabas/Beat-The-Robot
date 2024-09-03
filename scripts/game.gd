@@ -58,7 +58,8 @@ enum Scenes
 	LEVEL03,
 	LEVEL04,
 	LEVEL05, 
-	CREDITS 
+	CREDITS,
+	ERROR
 }
 var current_scene : Scenes = Scenes.HOME
 var current_scene_background_music : AudioStreamPlayer
@@ -91,6 +92,7 @@ var current_scene_background_music : AudioStreamPlayer
 @onready var settings_menu = $CanvasLayer/SettingsMenu
 @onready var level_selection_menu = $CanvasLayer/LevelSelectionMenu
 @onready var start_level_screen = $CanvasLayer/StartLevelScreen
+@onready var credits = $CanvasLayer/Credits
 
 var frequency_color : float = 0.0
 var sign_direction : int = 1
@@ -174,6 +176,7 @@ func is_scene_home_scene_or_level_selection(scene : Scenes):
 func reset_scene(scene : Scenes):
 	inform_player_level_has_finished.emit()
 	level_has_started = false
+	credits.visible = false
 	is_scene_home_scene_or_level_selection(scene)
 	
 	# NOTE : This has to be done for now for the special case of the credits
@@ -256,6 +259,7 @@ func reset_scene(scene : Scenes):
 			start_delay_timer_out = true
 			robot_path_following.progress_ratio = 0.5
 			robot_node.geometry_collision_shape_2d.shape.size = Vector2(64, 64)
+			credits.visible = true
 		_:
 			pass
 
@@ -334,6 +338,18 @@ func cycle_scenes():
 		home_ui.player_is_playing_a_level = false
 		home_ui.start_focus_on_start_button()
 	select_music_level_data(current_scene)
+
+func cast_int_to_scene_enum(value_to_cast : int):
+	match value_to_cast:
+		0: return Scenes.HOME
+		1: return Scenes.LEVELSELECTION
+		2: return Scenes.LEVEL01
+		3: return Scenes.LEVEL02
+		4: return Scenes.LEVEL03
+		5: return Scenes.LEVEL04
+		6: return Scenes.LEVEL05
+		7: return Scenes.CREDITS
+		_: return Scenes.ERROR
 
 func go_to_level_selection():
 	current_scene = Scenes.LEVELSELECTION
@@ -513,20 +529,20 @@ func _on_inform_player_level_has_finished():
 func _on_start_delay_timeout():
 	start_delay_timer_out = true
 
-func _on_home_ui_inform_game_that_user_has_started_game(event : InputEvent):
+func _on_home_ui_inform_game_that_user_has_started_game(_event : InputEvent):
 	current_scene = next_scene(current_scene)
 	reset_scene(current_scene)
 	play_music_node_safely()
 	home_ui.player_is_playing_a_level = true
 
-func _on_home_ui_inform_game_that_settings_screen_are_displayed(event : InputEvent):
+func _on_home_ui_inform_game_that_settings_screen_are_displayed(_event : InputEvent):
 	home_ui.visible = false
 	home_ui.is_menu_settings_being_displayed = true
 	enter_settings_menu_sound.play()
 	settings_menu.visible = true
 	settings_menu.return_button.grab_focus()
 
-func _on_home_ui_inform_game_that_user_has_exited_game(event : InputEvent):
+func _on_home_ui_inform_game_that_user_has_exited_game(_event : InputEvent):
 	get_tree().quit()
 
 func _on_settings_menu_inform_game_that_return_button_has_been_pressed(from_game_controller : bool):
@@ -562,7 +578,7 @@ func _on_level_selection_menu_inform_game_that_level_has_been_selected_from_ui(s
 	# NOTE : The +1 is because I am mapping the simple selected_level_id from the signal to the enum Scenes
 	# would be better if I put a function or a more explicit call of such cast. Also notice I am leaving
 	# a check to return home in case I am accessing a scene not yet done
-	current_scene = (selected_level_id + 1)
+	current_scene = cast_int_to_scene_enum(selected_level_id + 1)
 	if (current_scene >= Scenes.CREDITS):
 		print("Scene ", selected_level_id, " not build yet ...")
 		current_scene = Scenes.HOME
